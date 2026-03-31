@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>訓練日誌</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0d0d;--surface:#161616;--surface2:#1f1f1f;--border:#2a2a2a;
+  --accent:#c8ff00;--accent2:#ff4d00;--text:#f0f0f0;--text-muted:#666;--text-dim:#999;--radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:15px;min-height:100vh;padding-bottom:90px}
+
+/* TOPBAR */
+.topbar{background:var(--bg);padding:18px 20px 10px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.topbar h1{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--accent)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.date-badge{font-size:12px;color:var(--text-muted);background:var(--surface2);padding:4px 10px;border-radius:20px}
+
+/* UNIT TOGGLE */
+.unit-toggle{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:3px;gap:2px}
+.unit-btn{padding:3px 10px;border-radius:16px;border:none;background:none;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .15s;font-family:'Noto Sans TC',sans-serif}
+.unit-btn.active{background:var(--accent);color:#0d0d0d}
+
+/* TABS */
+.tabs{display:flex;background:var(--surface);margin:12px 16px;border-radius:var(--radius);padding:4px;gap:4px}
+.tab{flex:1;padding:9px 4px;text-align:center;font-size:13px;font-weight:500;color:var(--text-muted);border-radius:10px;cursor:pointer;transition:all .2s;border:none;background:none}
+.tab.active{background:var(--surface2);color:var(--accent);border:1px solid var(--border)}
+
+.page{display:none;padding:0 16px}
+.page.active{display:block}
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin:20px 0 10px}
+
+/* MUSCLE GRID */
+.muscle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.muscle-btn{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:12px 4px;text-align:center;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.muscle-btn.selected{border-color:var(--accent);background:rgba(200,255,0,0.07)}
+.muscle-btn .icon{font-size:22px}
+.muscle-btn .label{font-size:12px;color:var(--text-dim)}
+.muscle-btn.selected .label{color:var(--accent)}
+
+/* FORM */
+.form-row{display:flex;gap:8px;margin-bottom:10px}
+.form-group{flex:1;display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:11px;color:var(--text-muted);font-weight:500;letter-spacing:1px;text-transform:uppercase}
+.form-group input,.form-group select,textarea{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:15px;padding:12px 14px;width:100%;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none}
+.form-group input:focus,.form-group select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:none;height:70px;font-size:14px}
+select option{background:#1f1f1f}
+
+/* STEPPER */
+.stepper{display:flex;align-items:center;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+.stepper-btn{width:42px;height:46px;background:var(--surface2);border:none;color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .1s}
+.stepper-btn:active{background:var(--border)}
+.stepper input{flex:1;text-align:center;background:none;border:none;border-radius:0;padding:12px 4px}
+.unit-label-inline{font-size:12px;color:var(--text-muted);padding-right:10px;white-space:nowrap}
+
+.add-set-btn{width:100%;padding:13px;background:none;border:1.5px dashed var(--border);border-radius:10px;color:var(--text-muted);font-size:14px;cursor:pointer;margin:8px 0;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+.add-set-btn:active{border-color:var(--accent);color:var(--accent)}
+
+.sets-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.set-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:14px}
+.set-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent);min-width:24px}
+.set-info{flex:1;color:var(--text-dim)}
+.set-info strong{color:var(--text);font-size:15px}
+.set-delete{background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;padding:4px}
+
+.btn-primary{width:100%;padding:15px;background:var(--accent);border:none;border-radius:var(--radius);color:#0d0d0d;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;margin-top:12px;transition:opacity .15s,transform .1s}
+.btn-primary:active{opacity:.85;transform:scale(.98)}
+.btn-secondary{width:100%;padding:13px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;margin-top:8px;transition:opacity .15s}
+.btn-secondary:active{opacity:.7}
+.btn-green{width:100%;padding:13px;background:none;border:1.5px solid var(--accent);border-radius:var(--radius);color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;margin-top:8px;transition:opacity .15s}
+.btn-green:active{opacity:.7}
+.btn-danger{background:none;border:1.5px solid var(--accent2);color:var(--accent2);width:100%;padding:11px;border-radius:var(--radius);font-size:13px;cursor:pointer;margin-top:8px;font-family:'Noto Sans TC',sans-serif;font-weight:500;transition:all .15s}
+
+/* HISTORY */
+.workout-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.workout-card-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.workout-card-title{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.workout-card-date{font-size:12px;color:var(--text-muted)}
+.workout-card-body{padding:12px 16px}
+.exercise-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--border);font-size:14px}
+.exercise-row:last-child{border-bottom:none}
+.exercise-name{color:var(--text-dim)}
+.exercise-stats{color:var(--text);font-weight:500;font-size:13px;text-align:right;max-width:60%}
+.tag-muscle{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(200,255,0,0.1);color:var(--accent);border:1px solid rgba(200,255,0,0.2)}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--accent);line-height:1}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:4px}
+
+/* AI */
+.ai-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px}
+.ai-box-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ai-box-body{padding:14px 16px;font-size:14px;line-height:1.75;color:var(--text-dim)}
+.ai-box-body strong{color:var(--text)}
+.ai-placeholder{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:14px;line-height:1.8}
+.ai-placeholder .big{font-size:36px;margin-bottom:12px}
+.copy-box{background:#0a0a0a;border:1px solid var(--border);border-radius:10px;padding:14px;font-size:12px;color:var(--text-dim);line-height:1.8;margin:10px 0;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto;font-family:monospace}
+
+.empty{text-align:center;padding:50px 20px;color:var(--text-muted);font-size:14px;line-height:2}
+.empty .icon{font-size:40px;margin-bottom:10px}
+
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#0d0d0d;font-weight:700;font-size:14px;padding:10px 20px;border-radius:30px;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* EXPORT INFO */
+.export-info{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;font-size:13px;color:var(--text-dim);line-height:1.8}
+.export-info strong{color:var(--text)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>訓練日誌</h1>
+  <div class="topbar-right">
+    <div class="unit-toggle">
+      <button class="unit-btn active" id="btnKg" onclick="setUnit('kg')">kg</button>
+      <button class="unit-btn" id="btnLbs" onclick="setUnit('lbs')">lbs</button>
+    </div>
+    <div class="date-badge" id="todayLabel"></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('record',this)">📝 記錄</button>
+  <button class="tab" onclick="switchTab('history',this)">📅 歷史</button>
+  <button class="tab" onclick="switchTab('ai',this)">🤖 AI分析</button>
+</div>
+
+<!-- RECORD -->
+<div class="page active" id="page-record">
+  <div class="section-label">訓練部位</div>
+  <div class="muscle-grid">
+    <div class="muscle-btn" onclick="selectMuscle(this,'胸')"><div class="icon">💪</div><div class="label">胸</div></div>
+    <div class="muscle-btn" onclick="selectMuscle(this,'背')"><div class="icon">🔙</div><div class="label">背</div></div>
+    <div class="muscle-btn" onclick="selectMuscle(this,'腿')"><div class="icon">🦵</div><div class="label">腿</div></div>
+    <div class="muscle-btn" onclick="selectMuscle(this,'肩')"><div class="icon">🏋️</div><div class="label">肩</div></div>
+    <div class="muscle-btn" onclick="selectMuscle(this,'手臂')"><div class="icon">💎</div><div class="label">手臂</div></div>
+    <div class="muscle-btn" onclick="selectMuscle(this,'核心')"><div class="icon">⚡</div><div class="label">核心</div></div>
+  </div>
+
+  <div class="section-label">動作名稱</div>
+  <div class="form-group" style="margin-bottom:16px">
+    <input type="text" id="exerciseName" placeholder="例：臥推、深蹲、引體向上..." list="exerciseList">
+    <datalist id="exerciseList">
+      <option value="臥推"><option value="上斜臥推"><option value="下斜臥推">
+      <option value="啞鈴飛鳥"><option value="引體向上"><option value="滑輪下拉">
+      <option value="槓鈴划船"><option value="深蹲"><option value="腿推機">
+      <option value="硬舉"><option value="腿彎舉"><option value="肩推">
+      <option value="側平舉"><option value="二頭彎舉"><option value="三頭下壓">
+      <option value="捲腹"><option value="棒式">
+    </datalist>
+  </div>
+
+  <div class="section-label">組數紀錄</div>
+  <div class="sets-list" id="setsList"></div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label id="weightLabel">重量 (kg)</label>
+      <div class="stepper">
+        <button class="stepper-btn" onclick="adjust('weight',-1)">−</button>
+        <input type="number" id="inputWeight" value="60" min="0" step="1">
+        <button class="stepper-btn" onclick="adjust('weight',1)">+</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>次數</label>
+      <div class="stepper">
+        <button class="stepper-btn" onclick="adjust('reps',-1)">−</button>
+        <input type="number" id="inputReps" value="10" min="1" step="1">
+        <button class="stepper-btn" onclick="adjust('reps',1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="add-set-btn" onclick="addSet()">＋ 加入這組</button>
+
+  <div class="form-group" style="margin-top:8px">
+    <label>備註（選填）</label>
+    <textarea id="noteInput" placeholder="感覺、痠痛程度、技巧提醒..."></textarea>
+  </div>
+
+  <button class="btn-primary" onclick="saveWorkout()">儲存今日訓練</button>
+</div>
+
+<!-- HISTORY -->
+<div class="page" id="page-history">
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">總訓練次</div></div>
+    <div class="stat-card"><div class="stat-num" id="statWeek">0</div><div class="stat-label">本週次數</div></div>
+    <div class="stat-card"><div class="stat-num" id="statVolume">0</div><div class="stat-label" id="statVolumeLabel">總量(t)</div></div>
+  </div>
+  <div class="section-label">訓練記錄</div>
+  <div id="historyList"></div>
+</div>
+
+<!-- AI -->
+<div class="page" id="page-ai">
+  <div class="section-label">匯出試算表</div>
+  <div class="export-info">
+    點「<strong>下載 CSV</strong>」可以取得試算表檔案，用 <strong>Excel</strong> 或 <strong>Google Sheets</strong> 開啟，所有訓練資料都在裡面。
+  </div>
+  <button class="btn-green" onclick="exportCSV()">📊 下載 CSV 試算表</button>
+
+  <div class="section-label" style="margin-top:24px">AI 個人教練分析</div>
+  <div class="ai-box">
+    <div class="ai-box-header"><div class="ai-dot"></div>使用說明</div>
+    <div class="ai-box-body">
+      1. 點「<strong>複製訓練資料</strong>」<br>
+      2. 開啟 <strong>Claude.ai</strong>（就是現在這個網頁）<br>
+      3. 貼上，問「請分析我的訓練並給建議」<br><br>
+      資料越多，建議越準確 💪
+    </div>
+  </div>
+
+  <div id="aiDataBox" style="display:none">
+    <div class="copy-box" id="copyContent"></div>
+    <button class="btn-primary" onclick="copyData()">複製訓練資料</button>
+    <button class="btn-secondary" onclick="window.open('https://claude.ai','_blank')">開啟 Claude.ai</button>
+  </div>
+  <div id="aiEmpty" class="ai-placeholder">
+    <div class="big">🤖</div>
+    還沒有訓練資料<br>先去記錄幾次訓練<br>再來這裡分析
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== STATE =====
+let currentMuscle = '';
+let currentSets = [];   // stored in kg always
+let currentUnit = 'kg';
+let workouts = JSON.parse(localStorage.getItem('workouts_v2') || '[]');
+
+const KG_TO_LBS = 2.20462;
+
+function toDisplay(kg) {
+  if (currentUnit === 'lbs') return Math.round(kg * KG_TO_LBS * 10) / 10;
+  return kg;
+}
+function toKg(val) {
+  if (currentUnit === 'lbs') return Math.round(val / KG_TO_LBS * 10) / 10;
+  return val;
+}
+
+// ===== INIT =====
+(function init() {
+  const now = new Date();
+  document.getElementById('todayLabel').textContent =
+    now.toLocaleDateString('zh-TW', { month:'long', day:'numeric', weekday:'short' });
+  renderSets();
+})();
+
+// ===== UNIT =====
+function setUnit(u) {
+  const prevUnit = currentUnit;
+  currentUnit = u;
+  document.getElementById('btnKg').classList.toggle('active', u==='kg');
+  document.getElementById('btnLbs').classList.toggle('active', u==='lbs');
+  document.getElementById('weightLabel').textContent = `重量 (${u})`;
+
+  // Convert current weight input
+  const wEl = document.getElementById('inputWeight');
+  const curVal = parseFloat(wEl.value) || 0;
+  if (prevUnit === 'kg' && u === 'lbs') wEl.value = Math.round(curVal * KG_TO_LBS * 10) / 10;
+  else if (prevUnit === 'lbs' && u === 'kg') wEl.value = Math.round(curVal / KG_TO_LBS * 10) / 10;
+
+  renderSets();
+  if (document.getElementById('page-history').classList.contains('active')) renderHistory();
+}
+
+// ===== TABS =====
+function switchTab(tab, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  btn.classList.add('active');
+  if (tab === 'history') renderHistory();
+  if (tab === 'ai') renderAI();
+}
+
+// ===== MUSCLE =====
+function selectMuscle(el, muscle) {
+  document.querySelectorAll('.muscle-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  currentMuscle = muscle;
+}
+
+// ===== STEPPER =====
+function adjust(field, delta) {
+  const el = document.getElementById(field === 'weight' ? 'inputWeight' : 'inputReps');
+  let val = parseFloat(el.value) + delta;
+  if (val < 0) val = 0;
+  el.value = field === 'weight' ? Math.round(val * 10) / 10 : Math.round(val);
+}
+
+// ===== SETS =====
+function addSet() {
+  const weightDisplay = parseFloat(document.getElementById('inputWeight').value) || 0;
+  const reps = parseInt(document.getElementById('inputReps').value) || 0;
+  if (reps < 1) { showToast('請輸入次數'); return; }
+  const weightKg = toKg(weightDisplay);
+  currentSets.push({ weightKg, reps });
+  renderSets();
+}
+
+function renderSets() {
+  const list = document.getElementById('setsList');
+  if (!currentSets.length) { list.innerHTML = ''; return; }
+  const u = currentUnit;
+  list.innerHTML = currentSets.map((s, i) => {
+    const w = toDisplay(s.weightKg);
+    return `<div class="set-item">
+      <div class="set-num">${i+1}</div>
+      <div class="set-info">
+        <strong>${s.weightKg > 0 ? w + ' ' + u : '自身體重'}</strong>
+        <span> × ${s.reps} 下</span>
+      </div>
+      <button class="set-delete" onclick="deleteSet(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function deleteSet(i) { currentSets.splice(i,1); renderSets(); }
+
+// ===== SAVE =====
+function saveWorkout() {
+  const name = document.getElementById('exerciseName').value.trim();
+  if (!name) { showToast('請輸入動作名稱'); return; }
+  if (!currentMuscle) { showToast('請選擇訓練部位'); return; }
+  if (!currentSets.length) { showToast('請至少加入一組'); return; }
+  const note = document.getElementById('noteInput').value.trim();
+  const now = new Date();
+  workouts.unshift({
+    id: Date.now(),
+    date: now.toLocaleDateString('zh-TW'),
+    dateISO: now.toISOString().split('T')[0],
+    muscle: currentMuscle,
+    exercise: name,
+    sets: currentSets.map(s => ({...s})), // weightKg stored
+    note
+  });
+  localStorage.setItem('workouts_v2', JSON.stringify(workouts));
+  currentSets = [];
+  currentMuscle = '';
+  document.getElementById('exerciseName').value = '';
+  document.getElementById('noteInput').value = '';
+  document.querySelectorAll('.muscle-btn').forEach(b => b.classList.remove('selected'));
+  renderSets();
+  showToast('✓ 已儲存！');
+}
+
+// ===== HISTORY =====
+function renderHistory() {
+  const total = workouts.length;
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
+  const week = workouts.filter(w => new Date(w.dateISO) >= weekAgo).length;
+  let volKg = 0;
+  workouts.forEach(w => w.sets.forEach(s => { volKg += s.weightKg * s.reps; }));
+  const vol = currentUnit === 'lbs' ? (volKg * KG_TO_LBS / 1000).toFixed(1) : (volKg/1000).toFixed(1);
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statWeek').textContent = week;
+  document.getElementById('statVolume').textContent = vol;
+  document.getElementById('statVolumeLabel').textContent = currentUnit==='lbs' ? '總量(klbs)' : '總量(t)';
+
+  const list = document.getElementById('historyList');
+  if (!workouts.length) {
+    list.innerHTML = '<div class="empty"><div class="icon">📋</div>還沒有訓練記錄<br>去記錄你的第一次訓練吧！</div>';
+    return;
+  }
+  const grouped = {};
+  workouts.forEach(w => { if (!grouped[w.date]) grouped[w.date]=[]; grouped[w.date].push(w); });
+
+  list.innerHTML = Object.entries(grouped).map(([date, ws]) => {
+    const muscles = [...new Set(ws.map(w=>w.muscle))].map(m=>`<span class="tag-muscle">${m}</span>`).join('');
+    const rows = ws.map(w => {
+      const setStrs = w.sets.map(s => {
+        const disp = toDisplay(s.weightKg);
+        return `${s.weightKg > 0 ? disp+currentUnit : '自重'}×${s.reps}`;
+      }).join(', ');
+      return `<div class="exercise-row">
+        <span class="exercise-name">${w.exercise}</span>
+        <span class="exercise-stats">${w.sets.length}組 · ${setStrs}</span>
+      </div>${w.note ? `<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 ${w.note}</div>` : ''}`;
+    }).join('');
+    const ids = ws.map(w=>w.id).join(',');
+    return `<div class="workout-card">
+      <div class="workout-card-header">
+        <div class="workout-card-title">${muscles}</div>
+        <div class="workout-card-date">${date}</div>
+      </div>
+      <div class="workout-card-body">
+        ${rows}
+        <button class="btn-danger" onclick="deleteWorkout('${ids}','${date}')">刪除此次記錄</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteWorkout(ids, date) {
+  if (!confirm(`確定刪除 ${date} 的訓練記錄？`)) return;
+  const idArr = ids.split(',').map(Number);
+  workouts = workouts.filter(w => !idArr.includes(w.id));
+  localStorage.setItem('workouts_v2', JSON.stringify(workouts));
+  renderHistory();
+  showToast('已刪除');
+}
+
+// ===== CSV EXPORT =====
+function exportCSV() {
+  if (!workouts.length) { showToast('還沒有訓練資料'); return; }
+  const u = currentUnit;
+  const rows = [['日期','部位','動作',`重量(${u})`,'次數','組號','備註']];
+  workouts.forEach(w => {
+    w.sets.forEach((s, i) => {
+      const disp = s.weightKg > 0 ? toDisplay(s.weightKg) : 0;
+      rows.push([w.date, w.muscle, w.exercise, disp, s.reps, i+1, w.note || '']);
+    });
+  });
+  const bom = '\uFEFF';
+  const csv = bom + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `訓練日誌_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ CSV 已下載！');
+}
+
+// ===== AI TEXT =====
+function renderAI() {
+  if (!workouts.length) {
+    document.getElementById('aiDataBox').style.display = 'none';
+    document.getElementById('aiEmpty').style.display = 'block';
+    return;
+  }
+  document.getElementById('aiEmpty').style.display = 'none';
+  document.getElementById('aiDataBox').style.display = 'block';
+  const lines = ['=== 我的訓練記錄 ===',''];
+  const grouped = {};
+  workouts.forEach(w => { if (!grouped[w.date]) grouped[w.date]=[]; grouped[w.date].push(w); });
+  Object.entries(grouped).slice(0,14).forEach(([date,ws]) => {
+    lines.push(`【${date}】`);
+    ws.forEach(w => {
+      lines.push(`・${w.muscle}｜${w.exercise}`);
+      w.sets.forEach((s,i) => {
+        const disp = s.weightKg > 0 ? toDisplay(s.weightKg)+currentUnit : '自重';
+        lines.push(`  第${i+1}組：${disp} × ${s.reps}下`);
+      });
+      if (w.note) lines.push(`  備註：${w.note}`);
+    });
+    lines.push('');
+  });
+  lines.push('以上是我近期的訓練資料，請幫我：');
+  lines.push('1. 分析訓練量和肌群分配是否均衡');
+  lines.push('2. 找出我的進步或停滯的地方');
+  lines.push('3. 給我下週的訓練建議');
+  document.getElementById('copyContent').textContent = lines.join('\n');
+}
+
+function copyData() {
+  navigator.clipboard.writeText(document.getElementById('copyContent').textContent)
+    .then(() => showToast('✓ 已複製！貼到 Claude 吧'));
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
