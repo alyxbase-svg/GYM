@@ -432,17 +432,20 @@ function parseSheetData(rows) {
 }
 
 function parseSheetDate(dateStr) {
-  // 把 zh-TW 日期（如 2026/3/31）轉成 ISO 格式，使用本地時間避免時區問題
-  try {
-    const parts = String(dateStr).replace(/\//g, '-').split('-');
-    if (parts.length === 3) {
-      const y = parts[0].padStart(4,'0');
-      const m = parts[1].padStart(2,'0');
-      const d = parts[2].padStart(2,'0');
-      return y+'-'+m+'-'+d;
-    }
-  } catch(e) {}
-  return dateStr;
+  const s = String(dateStr).trim();
+  // 格式 2026/3/31
+  const slash = s.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+  if (slash) return slash[1]+'-'+slash[2].padStart(2,'0')+'-'+slash[3].padStart(2,'0');
+  // 格式 2026-3-31
+  const dash = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (dash) return dash[1]+'-'+dash[2].padStart(2,'0')+'-'+dash[3].padStart(2,'0');
+  // Sheets 回傳 Date 物件（UTC），加 8 小時轉台灣時間
+  const d = new Date(s);
+  if (!isNaN(d)) {
+    const tw = new Date(d.getTime() + 8*60*60*1000);
+    return tw.getUTCFullYear()+'-'+String(tw.getUTCMonth()+1).padStart(2,'0')+'-'+String(tw.getUTCDate()).padStart(2,'0');
+  }
+  return s;
 }
 
 function mergeWorkouts(cloud, local) {
