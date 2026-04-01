@@ -609,7 +609,7 @@ function renderHistory() {
 
   list.innerHTML = Object.entries(grouped).map(([date,ws])=>
     ws.map(w=>{
-      if (w.type==='run') return `<div class="workout-card run-card">
+      if (w.type==='run') return `<div class="workout-card run-card" data-id="${w.id}" data-date="${date}">
         <div class="workout-card-header">
           <div class="workout-card-title"><span class="tag-run">🏃 跑步</span></div>
           <div class="workout-card-date">${date}</div>
@@ -623,12 +623,12 @@ function renderHistory() {
             <div class="run-stat-item"><div class="run-stat-val">${w.elevation||'--'}</div><div class="run-stat-lbl">爬升 m</div></div>
           </div>
           ${w.note?`<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 ${w.note}</div>`:''}
-          <button class="btn-danger" onclick="deleteWorkout(${w.id},'${date}')">刪除此次記錄</button>
+          <button class="btn-danger" onclick="deleteWorkout(this)">刪除此次記錄</button>
         </div>
       </div>`;
       else {
         const setStrs=(w.sets||[]).map(s=>`${s.weightKg>0?toDisplay(s.weightKg)+currentUnit:'自重'}×${s.reps}`).join(', ');
-        return `<div class="workout-card">
+        return `<div class="workout-card" data-id="${w.id}" data-date="${date}">
           <div class="workout-card-header">
             <div class="workout-card-title"><span class="tag-muscle">${w.muscle}</span></div>
             <div class="workout-card-date">${date}</div>
@@ -639,7 +639,7 @@ function renderHistory() {
               <span class="exercise-stats">${(w.sets||[]).length}組 · ${setStrs}</span>
             </div>
             ${w.note?`<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 ${w.note}</div>`:''}
-            <button class="btn-danger" onclick="deleteWorkout(${w.id},'${date}')">刪除此次記錄</button>
+            <button class="btn-danger" onclick="deleteWorkout(this)">刪除此次記錄</button>
           </div>
         </div>`;
       }
@@ -647,7 +647,10 @@ function renderHistory() {
   ).join('');
 }
 
-function deleteWorkout(id, date) {
+function deleteWorkout(btn) {
+  const card = btn.closest('.workout-card');
+  const id = card.dataset.id;
+  const date = card.dataset.date;
   showConfirm(`確定刪除 ${date} 的記錄？`, () => {
     workouts = workouts.filter(w => String(w.id) !== String(id));
     localStorage.setItem('workouts_v3', JSON.stringify(workouts));
