@@ -432,10 +432,15 @@ function parseSheetData(rows) {
 }
 
 function parseSheetDate(dateStr) {
-  // 把 zh-TW 日期（如 2026/3/31）轉成 ISO 格式
+  // 把 zh-TW 日期（如 2026/3/31）轉成 ISO 格式，使用本地時間避免時區問題
   try {
-    const d = new Date(dateStr.replace(/\//g, '-'));
-    if (!isNaN(d)) return d.toISOString().split('T')[0];
+    const parts = String(dateStr).replace(/\//g, '-').split('-');
+    if (parts.length === 3) {
+      const y = parts[0].padStart(4,'0');
+      const m = parts[1].padStart(2,'0');
+      const d = parts[2].padStart(2,'0');
+      return y+'-'+m+'-'+d;
+    }
   } catch(e) {}
   return dateStr;
 }
