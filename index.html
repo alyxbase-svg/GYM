@@ -648,11 +648,28 @@ function renderHistory() {
 }
 
 function deleteWorkout(id, date) {
-  if (!confirm(`確定刪除 ${date} 的記錄？`)) return;
-  workouts=workouts.filter(w=>String(w.id)!==String(id));
-  localStorage.setItem('workouts_v3', JSON.stringify(workouts));
-  renderHistory();
-  showToast('已刪除（本機）');
+  showConfirm(`確定刪除 ${date} 的記錄？`, () => {
+    workouts = workouts.filter(w => String(w.id) !== String(id));
+    localStorage.setItem('workouts_v3', JSON.stringify(workouts));
+    renderHistory();
+    showToast('已刪除');
+  });
+}
+
+function showConfirm(msg, onConfirm) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px';
+  overlay.innerHTML = `
+    <div style="background:#1f1f1f;border:1px solid #333;border-radius:16px;padding:24px;width:100%;max-width:320px">
+      <div style="font-size:15px;color:#f0f0f0;line-height:1.6;margin-bottom:20px">${msg}</div>
+      <div style="display:flex;gap:10px">
+        <button id="confirmCancel" style="flex:1;padding:12px;background:none;border:1.5px solid #333;border-radius:10px;color:#999;font-size:14px;cursor:pointer;font-family:'Noto Sans TC',sans-serif">取消</button>
+        <button id="confirmOk" style="flex:1;padding:12px;background:none;border:1.5px solid #ff4d00;border-radius:10px;color:#ff4d00;font-size:14px;cursor:pointer;font-family:'Noto Sans TC',sans-serif">確定刪除</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('confirmCancel').onclick = () => document.body.removeChild(overlay);
+  document.getElementById('confirmOk').onclick = () => { document.body.removeChild(overlay); onConfirm(); };
 }
 
 function exportCSV() {
