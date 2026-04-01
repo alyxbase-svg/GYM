@@ -280,10 +280,9 @@ select option{background:#1f1f1f}
 
 <!-- HISTORY -->
 <div class="page" id="page-history">
-  <div class="stats-row">
-    <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">總訓練次</div></div>
-    <div class="stat-card"><div class="stat-num" id="statWeek">0</div><div class="stat-label">本週次數</div></div>
-    <div class="stat-card"><div class="stat-num" id="statVolume">0</div><div class="stat-label" id="statVolumeLabel">總量(t)</div></div>
+  <div class="stats-row" style="grid-template-columns:1fr 1fr">
+    <div class="stat-card"><div class="stat-num" id="statWeekLift">0</div><div class="stat-label">重訓本週次數</div></div>
+    <div class="stat-card" style="border-color:rgba(0,207,255,0.2)"><div class="stat-num" id="statWeekRun" style="color:var(--accent-run)">0</div><div class="stat-label">跑步本週次數</div></div>
   </div>
 
   <div class="history-filter">
@@ -591,15 +590,15 @@ function setFilter(f, btn) {
 }
 
 function renderHistory() {
-  const total = workouts.length;
   const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
-  const week = workouts.filter(w=>new Date(w.dateISO||w.date)>=weekAgo).length;
-  let volKg=0;
-  workouts.filter(w=>w.type==='lift').forEach(w=>(w.sets||[]).forEach(s=>{volKg+=(s.weightKg||0)*(s.reps||0);}));
-  document.getElementById('statTotal').textContent=total;
-  document.getElementById('statWeek').textContent=week;
-  document.getElementById('statVolume').textContent=currentUnit==='lbs'?(volKg*KG_TO_LBS/1000).toFixed(1):(volKg/1000).toFixed(1);
-  document.getElementById('statVolumeLabel').textContent=currentUnit==='lbs'?'總量(klbs)':'總量(t)';
+  // 重訓本週：同一天算1次（用 dateISO 去重）
+  const liftDaysThisWeek = new Set(
+    workouts.filter(w=>w.type==='lift' && new Date(w.dateISO||w.date)>=weekAgo).map(w=>w.dateISO||w.date)
+  ).size;
+  // 跑步本週：每筆算1次
+  const runCountThisWeek = workouts.filter(w=>w.type==='run' && new Date(w.dateISO||w.date)>=weekAgo).length;
+  document.getElementById('statWeekLift').textContent=liftDaysThisWeek;
+  document.getElementById('statWeekRun').textContent=runCountThisWeek;
 
   let filtered = workouts;
   if (historyFilter==='lift') filtered=workouts.filter(w=>w.type==='lift');
