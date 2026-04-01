@@ -8,7 +8,7 @@
 <style>
 :root {
   --bg:#0d0d0d;--surface:#161616;--surface2:#1f1f1f;--border:#2a2a2a;
-  --accent:#c8ff00;--accent2:#ff4d00;--text:#f0f0f0;--text-muted:#666;--text-dim:#999;--radius:14px;
+  --accent:#c8ff00;--accent2:#ff4d00;--accent-run:#00cfff;--text:#f0f0f0;--text-muted:#666;--text-dim:#999;--radius:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:15px;min-height:100vh;padding-bottom:90px}
@@ -37,9 +37,11 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
 .muscle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
 .muscle-btn{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:12px 4px;text-align:center;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:6px}
 .muscle-btn.selected{border-color:var(--accent);background:rgba(200,255,0,0.07)}
+.muscle-btn.run-btn.selected{border-color:var(--accent-run);background:rgba(0,207,255,0.07)}
 .muscle-btn .icon{font-size:22px}
 .muscle-btn .label{font-size:12px;color:var(--text-dim)}
 .muscle-btn.selected .label{color:var(--accent)}
+.muscle-btn.run-btn.selected .label{color:var(--accent-run)}
 
 /* FORM */
 .form-row{display:flex;gap:8px;margin-bottom:10px}
@@ -47,6 +49,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
 .form-group label{font-size:11px;color:var(--text-muted);font-weight:500;letter-spacing:1px;text-transform:uppercase}
 .form-group input,.form-group select,textarea{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:15px;padding:12px 14px;width:100%;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none}
 .form-group input:focus,.form-group select:focus,textarea:focus{border-color:var(--accent)}
+.run-mode .form-group input:focus{border-color:var(--accent-run)}
 textarea{resize:none;height:70px;font-size:14px}
 select option{background:#1f1f1f}
 
@@ -69,14 +72,37 @@ select option{background:#1f1f1f}
 
 .btn-primary{width:100%;padding:15px;background:var(--accent);border:none;border-radius:var(--radius);color:#0d0d0d;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;margin-top:12px;transition:opacity .15s,transform .1s}
 .btn-primary:active{opacity:.85;transform:scale(.98)}
+.btn-primary.run-save{background:var(--accent-run)}
 .btn-secondary{width:100%;padding:13px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;margin-top:8px;transition:opacity .15s}
 .btn-secondary:active{opacity:.7}
 .btn-green{width:100%;padding:13px;background:none;border:1.5px solid var(--accent);border-radius:var(--radius);color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;margin-top:8px;transition:opacity .15s}
 .btn-green:active{opacity:.7}
 .btn-danger{background:none;border:1.5px solid var(--accent2);color:var(--accent2);width:100%;padding:11px;border-radius:var(--radius);font-size:13px;cursor:pointer;margin-top:8px;font-family:'Noto Sans TC',sans-serif;font-weight:500;transition:all .15s}
 
+/* RUNNING FORM */
+.run-form{display:none;animation:fadeIn .2s ease}
+.run-form.active{display:block}
+.lift-form{display:block;animation:fadeIn .2s ease}
+.lift-form.hidden{display:none}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.run-banner{background:rgba(0,207,255,0.07);border:1.5px solid rgba(0,207,255,0.25);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--accent-run)}
+.run-banner .run-icon{font-size:24px}
+
+.run-metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.run-metric{display:flex;flex-direction:column;gap:6px}
+.run-metric label{font-size:11px;color:var(--text-muted);font-weight:500;letter-spacing:1px;text-transform:uppercase}
+.run-metric input{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:16px;padding:12px 14px;width:100%;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none;text-align:center}
+.run-metric input:focus{border-color:var(--accent-run)}
+.run-metric .unit-hint{font-size:11px;color:var(--text-muted);text-align:center;margin-top:2px}
+
+.pace-display{background:var(--surface);border:1.5px solid rgba(0,207,255,0.3);border-radius:10px;padding:14px;text-align:center;margin:10px 0}
+.pace-display .pace-val{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent-run);letter-spacing:2px}
+.pace-display .pace-label{font-size:11px;color:var(--text-muted);margin-top:2px;letter-spacing:1px;text-transform:uppercase}
+
 /* HISTORY */
 .workout-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.workout-card.run-card{border-color:rgba(0,207,255,0.2)}
 .workout-card-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
 .workout-card-title{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
 .workout-card-date{font-size:12px;color:var(--text-muted)}
@@ -86,6 +112,13 @@ select option{background:#1f1f1f}
 .exercise-name{color:var(--text-dim)}
 .exercise-stats{color:var(--text);font-weight:500;font-size:13px;text-align:right;max-width:60%}
 .tag-muscle{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(200,255,0,0.1);color:var(--accent);border:1px solid rgba(200,255,0,0.2)}
+.tag-run{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(0,207,255,0.1);color:var(--accent-run);border:1px solid rgba(0,207,255,0.2)}
+
+/* RUN STATS IN HISTORY */
+.run-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.run-stat-item{background:var(--surface2);border-radius:10px;padding:10px 8px;text-align:center}
+.run-stat-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent-run);line-height:1}
+.run-stat-lbl{font-size:10px;color:var(--text-muted);margin-top:3px}
 
 /* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
@@ -113,6 +146,12 @@ select option{background:#1f1f1f}
 /* EXPORT INFO */
 .export-info{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;font-size:13px;color:var(--text-dim);line-height:1.8}
 .export-info strong{color:var(--text)}
+
+/* DIVIDER */
+.history-filter{display:flex;gap:8px;margin-bottom:16px}
+.filter-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text-muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Noto Sans TC',sans-serif}
+.filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(200,255,0,0.07)}
+.filter-btn.run-filter.active{border-color:var(--accent-run);color:var(--accent-run);background:rgba(0,207,255,0.07)}
 </style>
 </head>
 <body>
@@ -144,51 +183,98 @@ select option{background:#1f1f1f}
     <div class="muscle-btn" onclick="selectMuscle(this,'肩')"><div class="icon">🏋️</div><div class="label">肩</div></div>
     <div class="muscle-btn" onclick="selectMuscle(this,'手臂')"><div class="icon">💎</div><div class="label">手臂</div></div>
     <div class="muscle-btn" onclick="selectMuscle(this,'核心')"><div class="icon">⚡</div><div class="label">核心</div></div>
+    <div class="muscle-btn run-btn" onclick="selectMuscle(this,'跑步')"><div class="icon">🏃</div><div class="label">跑步</div></div>
   </div>
 
-  <div class="section-label">動作名稱</div>
-  <div class="form-group" style="margin-bottom:16px">
-    <input type="text" id="exerciseName" placeholder="例：臥推、深蹲、引體向上..." list="exerciseList">
-    <datalist id="exerciseList">
-      <option value="臥推"><option value="上斜臥推"><option value="下斜臥推">
-      <option value="啞鈴飛鳥"><option value="引體向上"><option value="滑輪下拉">
-      <option value="槓鈴划船"><option value="深蹲"><option value="腿推機">
-      <option value="硬舉"><option value="腿彎舉"><option value="肩推">
-      <option value="側平舉"><option value="二頭彎舉"><option value="三頭下壓">
-      <option value="捲腹"><option value="棒式">
-    </datalist>
-  </div>
+  <!-- 重訓表單 -->
+  <div class="lift-form" id="liftForm">
+    <div class="section-label">動作名稱</div>
+    <div class="form-group" style="margin-bottom:16px">
+      <input type="text" id="exerciseName" placeholder="例：臥推、深蹲、引體向上..." list="exerciseList">
+      <datalist id="exerciseList">
+        <option value="臥推"><option value="上斜臥推"><option value="下斜臥推">
+        <option value="啞鈴飛鳥"><option value="引體向上"><option value="滑輪下拉">
+        <option value="槓鈴划船"><option value="深蹲"><option value="腿推機">
+        <option value="硬舉"><option value="腿彎舉"><option value="肩推">
+        <option value="側平舉"><option value="二頭彎舉"><option value="三頭下壓">
+        <option value="捲腹"><option value="棒式">
+      </datalist>
+    </div>
 
-  <div class="section-label">組數紀錄</div>
-  <div class="sets-list" id="setsList"></div>
+    <div class="section-label">組數紀錄</div>
+    <div class="sets-list" id="setsList"></div>
 
-  <div class="form-row">
-    <div class="form-group">
-      <label id="weightLabel">重量 (kg)</label>
-      <div class="stepper">
-        <button class="stepper-btn" onclick="adjust('weight',-1)">−</button>
-        <input type="number" id="inputWeight" value="60" min="0" step="1">
-        <button class="stepper-btn" onclick="adjust('weight',1)">+</button>
+    <div class="form-row">
+      <div class="form-group">
+        <label id="weightLabel">重量 (kg)</label>
+        <div class="stepper">
+          <button class="stepper-btn" onclick="adjust('weight',-1)">−</button>
+          <input type="number" id="inputWeight" value="60" min="0" step="1">
+          <button class="stepper-btn" onclick="adjust('weight',1)">+</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>次數</label>
+        <div class="stepper">
+          <button class="stepper-btn" onclick="adjust('reps',-1)">−</button>
+          <input type="number" id="inputReps" value="10" min="1" step="1">
+          <button class="stepper-btn" onclick="adjust('reps',1)">+</button>
+        </div>
       </div>
     </div>
-    <div class="form-group">
-      <label>次數</label>
-      <div class="stepper">
-        <button class="stepper-btn" onclick="adjust('reps',-1)">−</button>
-        <input type="number" id="inputReps" value="10" min="1" step="1">
-        <button class="stepper-btn" onclick="adjust('reps',1)">+</button>
+
+    <button class="add-set-btn" onclick="addSet()">＋ 加入這組</button>
+
+    <div class="form-group" style="margin-top:8px">
+      <label>備註（選填）</label>
+      <textarea id="noteInput" placeholder="感覺、痠痛程度、技巧提醒..."></textarea>
+    </div>
+
+    <button class="btn-primary" onclick="saveWorkout()">儲存今日訓練</button>
+  </div>
+
+  <!-- 跑步表單 -->
+  <div class="run-form" id="runForm">
+    <div class="run-banner">
+      <div class="run-icon">🏃</div>
+      <div>跑步模式 — 填寫本次跑步數據</div>
+    </div>
+
+    <div class="run-metric-grid">
+      <div class="run-metric">
+        <label>距離</label>
+        <input type="number" id="runDistance" placeholder="0.00" step="0.01" min="0">
+        <div class="unit-hint">公里 (km)</div>
+      </div>
+      <div class="run-metric">
+        <label>時長</label>
+        <input type="text" id="runDuration" placeholder="00:00" maxlength="8">
+        <div class="unit-hint">時:分:秒 或 分:秒</div>
+      </div>
+      <div class="run-metric">
+        <label>平均心率</label>
+        <input type="number" id="runHR" placeholder="0" min="0" max="250">
+        <div class="unit-hint">bpm</div>
+      </div>
+      <div class="run-metric">
+        <label>總爬升</label>
+        <input type="number" id="runElevation" placeholder="0" min="0">
+        <div class="unit-hint">公尺 (m)</div>
       </div>
     </div>
+
+    <div class="pace-display" id="paceDisplay">
+      <div class="pace-val" id="paceVal">--'--"</div>
+      <div class="pace-label">平均配速 (min/km)</div>
+    </div>
+
+    <div class="form-group" style="margin-top:8px">
+      <label>備註（選填）</label>
+      <textarea id="runNote" placeholder="路線、天氣、感受..."></textarea>
+    </div>
+
+    <button class="btn-primary run-save" onclick="saveRun()">儲存跑步紀錄</button>
   </div>
-
-  <button class="add-set-btn" onclick="addSet()">＋ 加入這組</button>
-
-  <div class="form-group" style="margin-top:8px">
-    <label>備註（選填）</label>
-    <textarea id="noteInput" placeholder="感覺、痠痛程度、技巧提醒..."></textarea>
-  </div>
-
-  <button class="btn-primary" onclick="saveWorkout()">儲存今日訓練</button>
 </div>
 
 <!-- HISTORY -->
@@ -198,6 +284,13 @@ select option{background:#1f1f1f}
     <div class="stat-card"><div class="stat-num" id="statWeek">0</div><div class="stat-label">本週次數</div></div>
     <div class="stat-card"><div class="stat-num" id="statVolume">0</div><div class="stat-label" id="statVolumeLabel">總量(t)</div></div>
   </div>
+
+  <div class="history-filter">
+    <button class="filter-btn active" id="filterAll" onclick="setFilter('all',this)">全部</button>
+    <button class="filter-btn" id="filterLift" onclick="setFilter('lift',this)">重訓</button>
+    <button class="filter-btn run-filter" id="filterRun" onclick="setFilter('run',this)">🏃 跑步</button>
+  </div>
+
   <div class="section-label">訓練記錄</div>
   <div id="historyList"></div>
 </div>
@@ -237,8 +330,9 @@ select option{background:#1f1f1f}
 <script>
 // ===== STATE =====
 let currentMuscle = '';
-let currentSets = [];   // stored in kg always
+let currentSets = [];
 let currentUnit = 'kg';
+let historyFilter = 'all';
 let workouts = JSON.parse(localStorage.getItem('workouts_v2') || '[]');
 
 const KG_TO_LBS = 2.20462;
@@ -258,6 +352,10 @@ function toKg(val) {
   document.getElementById('todayLabel').textContent =
     now.toLocaleDateString('zh-TW', { month:'long', day:'numeric', weekday:'short' });
   renderSets();
+
+  // Auto-calc pace when distance or duration changes
+  document.getElementById('runDistance').addEventListener('input', calcPace);
+  document.getElementById('runDuration').addEventListener('input', calcPace);
 })();
 
 // ===== UNIT =====
@@ -268,7 +366,6 @@ function setUnit(u) {
   document.getElementById('btnLbs').classList.toggle('active', u==='lbs');
   document.getElementById('weightLabel').textContent = `重量 (${u})`;
 
-  // Convert current weight input
   const wEl = document.getElementById('inputWeight');
   const curVal = parseFloat(wEl.value) || 0;
   if (prevUnit === 'kg' && u === 'lbs') wEl.value = Math.round(curVal * KG_TO_LBS * 10) / 10;
@@ -293,6 +390,10 @@ function selectMuscle(el, muscle) {
   document.querySelectorAll('.muscle-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
   currentMuscle = muscle;
+
+  const isRun = muscle === '跑步';
+  document.getElementById('liftForm').classList.toggle('hidden', isRun);
+  document.getElementById('runForm').classList.toggle('active', isRun);
 }
 
 // ===== STEPPER =====
@@ -332,21 +433,50 @@ function renderSets() {
 
 function deleteSet(i) { currentSets.splice(i,1); renderSets(); }
 
-// ===== SAVE =====
+// ===== PACE CALCULATOR =====
+function parseDuration(str) {
+  // Supports mm:ss or hh:mm:ss
+  const parts = str.trim().split(':').map(Number);
+  if (parts.some(isNaN)) return null;
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  return null;
+}
+
+function formatPace(secPerKm) {
+  const min = Math.floor(secPerKm / 60);
+  const sec = Math.round(secPerKm % 60);
+  return `${min}'${String(sec).padStart(2,'0')}"`;
+}
+
+function calcPace() {
+  const dist = parseFloat(document.getElementById('runDistance').value);
+  const durStr = document.getElementById('runDuration').value;
+  const totalSec = parseDuration(durStr);
+  if (dist > 0 && totalSec && totalSec > 0) {
+    const paceSecPerKm = totalSec / dist;
+    document.getElementById('paceVal').textContent = formatPace(paceSecPerKm);
+  } else {
+    document.getElementById('paceVal').textContent = '--\'--"';
+  }
+}
+
+// ===== SAVE WORKOUT (重訓) =====
 function saveWorkout() {
   const name = document.getElementById('exerciseName').value.trim();
   if (!name) { showToast('請輸入動作名稱'); return; }
-  if (!currentMuscle) { showToast('請選擇訓練部位'); return; }
+  if (!currentMuscle || currentMuscle === '跑步') { showToast('請選擇訓練部位'); return; }
   if (!currentSets.length) { showToast('請至少加入一組'); return; }
   const note = document.getElementById('noteInput').value.trim();
   const now = new Date();
   workouts.unshift({
     id: Date.now(),
+    type: 'lift',
     date: now.toLocaleDateString('zh-TW'),
     dateISO: now.toISOString().split('T')[0],
     muscle: currentMuscle,
     exercise: name,
-    sets: currentSets.map(s => ({...s})), // weightKg stored
+    sets: currentSets.map(s => ({...s})),
     note
   });
   localStorage.setItem('workouts_v2', JSON.stringify(workouts));
@@ -355,8 +485,66 @@ function saveWorkout() {
   document.getElementById('exerciseName').value = '';
   document.getElementById('noteInput').value = '';
   document.querySelectorAll('.muscle-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('liftForm').classList.remove('hidden');
+  document.getElementById('runForm').classList.remove('active');
   renderSets();
   showToast('✓ 已儲存！');
+}
+
+// ===== SAVE RUN =====
+function saveRun() {
+  const dist = parseFloat(document.getElementById('runDistance').value);
+  const durStr = document.getElementById('runDuration').value.trim();
+  const hr = parseInt(document.getElementById('runHR').value) || 0;
+  const elev = parseInt(document.getElementById('runElevation').value) || 0;
+  const note = document.getElementById('runNote').value.trim();
+
+  if (!dist || dist <= 0) { showToast('請輸入距離'); return; }
+  if (!durStr) { showToast('請輸入時長'); return; }
+  const totalSec = parseDuration(durStr);
+  if (!totalSec) { showToast('時長格式錯誤，請用 分:秒 或 時:分:秒'); return; }
+
+  const paceSecPerKm = totalSec / dist;
+  const pace = formatPace(paceSecPerKm);
+
+  const now = new Date();
+  workouts.unshift({
+    id: Date.now(),
+    type: 'run',
+    date: now.toLocaleDateString('zh-TW'),
+    dateISO: now.toISOString().split('T')[0],
+    muscle: '跑步',
+    distance: dist,
+    duration: durStr,
+    durationSec: totalSec,
+    heartRate: hr,
+    elevation: elev,
+    pace,
+    paceSecPerKm,
+    note
+  });
+  localStorage.setItem('workouts_v2', JSON.stringify(workouts));
+
+  // Reset
+  document.getElementById('runDistance').value = '';
+  document.getElementById('runDuration').value = '';
+  document.getElementById('runHR').value = '';
+  document.getElementById('runElevation').value = '';
+  document.getElementById('runNote').value = '';
+  document.getElementById('paceVal').textContent = '--\'--"';
+  currentMuscle = '';
+  document.querySelectorAll('.muscle-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('liftForm').classList.remove('hidden');
+  document.getElementById('runForm').classList.remove('active');
+  showToast('🏃 跑步紀錄已儲存！');
+}
+
+// ===== HISTORY FILTER =====
+function setFilter(f, btn) {
+  historyFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHistory();
 }
 
 // ===== HISTORY =====
@@ -365,51 +553,74 @@ function renderHistory() {
   const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
   const week = workouts.filter(w => new Date(w.dateISO) >= weekAgo).length;
   let volKg = 0;
-  workouts.forEach(w => w.sets.forEach(s => { volKg += s.weightKg * s.reps; }));
+  workouts.filter(w => w.type === 'lift').forEach(w => w.sets.forEach(s => { volKg += s.weightKg * s.reps; }));
   const vol = currentUnit === 'lbs' ? (volKg * KG_TO_LBS / 1000).toFixed(1) : (volKg/1000).toFixed(1);
   document.getElementById('statTotal').textContent = total;
   document.getElementById('statWeek').textContent = week;
   document.getElementById('statVolume').textContent = vol;
   document.getElementById('statVolumeLabel').textContent = currentUnit==='lbs' ? '總量(klbs)' : '總量(t)';
 
+  let filtered = workouts;
+  if (historyFilter === 'lift') filtered = workouts.filter(w => w.type === 'lift');
+  if (historyFilter === 'run') filtered = workouts.filter(w => w.type === 'run');
+
   const list = document.getElementById('historyList');
-  if (!workouts.length) {
-    list.innerHTML = '<div class="empty"><div class="icon">📋</div>還沒有訓練記錄<br>去記錄你的第一次訓練吧！</div>';
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty"><div class="icon">📋</div>沒有符合的記錄</div>';
     return;
   }
+
   const grouped = {};
-  workouts.forEach(w => { if (!grouped[w.date]) grouped[w.date]=[]; grouped[w.date].push(w); });
+  filtered.forEach(w => { if (!grouped[w.date]) grouped[w.date]=[]; grouped[w.date].push(w); });
 
   list.innerHTML = Object.entries(grouped).map(([date, ws]) => {
-    const muscles = [...new Set(ws.map(w=>w.muscle))].map(m=>`<span class="tag-muscle">${m}</span>`).join('');
-    const rows = ws.map(w => {
-      const setStrs = w.sets.map(s => {
-        const disp = toDisplay(s.weightKg);
-        return `${s.weightKg > 0 ? disp+currentUnit : '自重'}×${s.reps}`;
-      }).join(', ');
-      return `<div class="exercise-row">
-        <span class="exercise-name">${w.exercise}</span>
-        <span class="exercise-stats">${w.sets.length}組 · ${setStrs}</span>
-      </div>${w.note ? `<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 ${w.note}</div>` : ''}`;
+    return ws.map(w => {
+      if (w.type === 'run') {
+        return `<div class="workout-card run-card">
+          <div class="workout-card-header">
+            <div class="workout-card-title"><span class="tag-run">🏃 跑步</span></div>
+            <div class="workout-card-date">${date}</div>
+          </div>
+          <div class="workout-card-body">
+            <div class="run-stats-grid">
+              <div class="run-stat-item"><div class="run-stat-val">${w.distance}</div><div class="run-stat-lbl">距離 km</div></div>
+              <div class="run-stat-item"><div class="run-stat-val">${w.pace}</div><div class="run-stat-lbl">配速 /km</div></div>
+              <div class="run-stat-item"><div class="run-stat-val">${w.heartRate || '--'}</div><div class="run-stat-lbl">心率 bpm</div></div>
+              <div class="run-stat-item"><div class="run-stat-val">${w.duration}</div><div class="run-stat-lbl">時長</div></div>
+              <div class="run-stat-item"><div class="run-stat-val">${w.elevation || '--'}</div><div class="run-stat-lbl">爬升 m</div></div>
+            </div>
+            ${w.note ? `<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 ${w.note}</div>` : ''}
+            <button class="btn-danger" onclick="deleteWorkout('${w.id}','${date}')">刪除此次記錄</button>
+          </div>
+        </div>`;
+      } else {
+        const muscles = `<span class="tag-muscle">${w.muscle}</span>`;
+        const setStrs = w.sets.map(s => {
+          const disp = toDisplay(s.weightKg);
+          return `${s.weightKg > 0 ? disp+currentUnit : '自重'}×${s.reps}`;
+        }).join(', ');
+        return `<div class="workout-card">
+          <div class="workout-card-header">
+            <div class="workout-card-title">${muscles}</div>
+            <div class="workout-card-date">${date}</div>
+          </div>
+          <div class="workout-card-body">
+            <div class="exercise-row">
+              <span class="exercise-name">${w.exercise}</span>
+              <span class="exercise-stats">${w.sets.length}組 · ${setStrs}</span>
+            </div>
+            ${w.note ? `<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 ${w.note}</div>` : ''}
+            <button class="btn-danger" onclick="deleteWorkout('${w.id}','${date}')">刪除此次記錄</button>
+          </div>
+        </div>`;
+      }
     }).join('');
-    const ids = ws.map(w=>w.id).join(',');
-    return `<div class="workout-card">
-      <div class="workout-card-header">
-        <div class="workout-card-title">${muscles}</div>
-        <div class="workout-card-date">${date}</div>
-      </div>
-      <div class="workout-card-body">
-        ${rows}
-        <button class="btn-danger" onclick="deleteWorkout('${ids}','${date}')">刪除此次記錄</button>
-      </div>
-    </div>`;
   }).join('');
 }
 
-function deleteWorkout(ids, date) {
-  if (!confirm(`確定刪除 ${date} 的訓練記錄？`)) return;
-  const idArr = ids.split(',').map(Number);
-  workouts = workouts.filter(w => !idArr.includes(w.id));
+function deleteWorkout(id, date) {
+  if (!confirm(`確定刪除 ${date} 的記錄？`)) return;
+  workouts = workouts.filter(w => w.id !== Number(id));
   localStorage.setItem('workouts_v2', JSON.stringify(workouts));
   renderHistory();
   showToast('已刪除');
@@ -419,12 +630,16 @@ function deleteWorkout(ids, date) {
 function exportCSV() {
   if (!workouts.length) { showToast('還沒有訓練資料'); return; }
   const u = currentUnit;
-  const rows = [['日期','部位','動作',`重量(${u})`,'次數','組號','備註']];
+  const rows = [['日期','類型','部位/類別','動作/數據','重量','次數','組號','距離km','時長','心率','爬升m','配速','備註']];
   workouts.forEach(w => {
-    w.sets.forEach((s, i) => {
-      const disp = s.weightKg > 0 ? toDisplay(s.weightKg) : 0;
-      rows.push([w.date, w.muscle, w.exercise, disp, s.reps, i+1, w.note || '']);
-    });
+    if (w.type === 'run') {
+      rows.push([w.date,'跑步','跑步','跑步','','','',w.distance,w.duration,w.heartRate||'',w.elevation||'',w.pace,w.note||'']);
+    } else {
+      w.sets.forEach((s, i) => {
+        const disp = s.weightKg > 0 ? toDisplay(s.weightKg) : 0;
+        rows.push([w.date,'重訓',w.muscle,w.exercise,disp,s.reps,i+1,'','','','','',w.note||'']);
+      });
+    }
   });
   const bom = '\uFEFF';
   const csv = bom + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
@@ -453,11 +668,15 @@ function renderAI() {
   Object.entries(grouped).slice(0,14).forEach(([date,ws]) => {
     lines.push(`【${date}】`);
     ws.forEach(w => {
-      lines.push(`・${w.muscle}｜${w.exercise}`);
-      w.sets.forEach((s,i) => {
-        const disp = s.weightKg > 0 ? toDisplay(s.weightKg)+currentUnit : '自重';
-        lines.push(`  第${i+1}組：${disp} × ${s.reps}下`);
-      });
+      if (w.type === 'run') {
+        lines.push(`・跑步｜距離 ${w.distance}km｜時長 ${w.duration}｜配速 ${w.pace}/km${w.heartRate ? '｜心率 '+w.heartRate+'bpm' : ''}${w.elevation ? '｜爬升 '+w.elevation+'m' : ''}`);
+      } else {
+        lines.push(`・${w.muscle}｜${w.exercise}`);
+        w.sets.forEach((s,i) => {
+          const disp = s.weightKg > 0 ? toDisplay(s.weightKg)+currentUnit : '自重';
+          lines.push(`  第${i+1}組：${disp} × ${s.reps}下`);
+        });
+      }
       if (w.note) lines.push(`  備註：${w.note}`);
     });
     lines.push('');
