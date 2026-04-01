@@ -609,7 +609,7 @@ function renderHistory() {
 
   list.innerHTML = Object.entries(grouped).map(([date,ws])=>
     ws.map(w=>{
-      if (w.type==='run') return `<div class="workout-card run-card" data-id="${w.id}" data-date="${date}">
+      if (w.type==='run') return `<div class="workout-card run-card" data-id="${w.id}" data-date="${date}" data-muscle="跑步" data-exercise="${w.id}">
         <div class="workout-card-header">
           <div class="workout-card-title"><span class="tag-run">🏃 跑步</span></div>
           <div class="workout-card-date">${date}</div>
@@ -628,7 +628,7 @@ function renderHistory() {
       </div>`;
       else {
         const setStrs=(w.sets||[]).map(s=>`${s.weightKg>0?toDisplay(s.weightKg)+currentUnit:'自重'}×${s.reps}`).join(', ');
-        return `<div class="workout-card" data-id="${w.id}" data-date="${date}">
+        return `<div class="workout-card" data-id="${w.id}" data-date="${date}" data-muscle="${w.muscle}" data-exercise="${w.exercise}">
           <div class="workout-card-header">
             <div class="workout-card-title"><span class="tag-muscle">${w.muscle}</span></div>
             <div class="workout-card-date">${date}</div>
@@ -651,11 +651,33 @@ function deleteWorkout(btn) {
   const card = btn.closest('.workout-card');
   const id = card.dataset.id;
   const date = card.dataset.date;
-  showConfirm(`確定刪除 ${date} 的記錄？`, () => {
+  const muscle = card.dataset.muscle;
+  const exercise = card.dataset.exercise;
+  showConfirm(`確定刪除 ${date} 的記錄？`, async () => {
+    // 刪本機
     workouts = workouts.filter(w => String(w.id) !== String(id));
     localStorage.setItem('workouts_v3', JSON.stringify(workouts));
     renderHistory();
-    showToast('已刪除');
+    showToast('刪除中...');
+    // 刪 Sheets
+    try {
+      const key = `${date}|${muscle}|${exercise}`;
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'delete', key })
+      });
+      const json = await res.json();
+      if (json.status === 'ok') {
+        showToast('✓ 已從雲端刪除');
+        setSyncStatus('ok', '已同步 · ' + new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}));
+      } else {
+        showToast('本機已刪，雲端刪除失敗');
+        setSyncStatus('err', '雲端刪除失敗');
+      }
+    } catch(e) {
+      showToast('本機已刪，離線無法同步');
+      setSyncStatus('err', '離線，雲端未刪除');
+    }
   });
 }
 
