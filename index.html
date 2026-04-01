@@ -20,7 +20,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
 
 .sync-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-muted)}
 .sync-status{display:flex;align-items:center;gap:6px}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--text-muted)}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--text-muted);flex-shrink:0}
 .sync-dot.ok{background:var(--accent)}
 .sync-dot.err{background:var(--accent2)}
 .sync-dot.loading{background:#ffaa00;animation:pulse 1s infinite}
@@ -84,17 +84,15 @@ select option{background:#1f1f1f}
 .lift-form{display:block;animation:fadeIn .2s ease}
 .lift-form.hidden{display:none}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
 .run-banner{background:rgba(0,207,255,0.07);border:1.5px solid rgba(0,207,255,0.25);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--accent-run)}
-.run-banner .run-icon{font-size:24px}
-
 .run-metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .run-metric{display:flex;flex-direction:column;gap:6px}
 .run-metric label{font-size:11px;color:var(--text-muted);font-weight:500;letter-spacing:1px;text-transform:uppercase}
 .run-metric input{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:16px;padding:12px 14px;width:100%;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none;text-align:center}
 .run-metric input:focus{border-color:var(--accent-run)}
 .run-metric .unit-hint{font-size:11px;color:var(--text-muted);text-align:center;margin-top:2px}
-
 .pace-display{background:var(--surface);border:1.5px solid rgba(0,207,255,0.3);border-radius:10px;padding:14px;text-align:center;margin:10px 0}
 .pace-display .pace-val{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent-run);letter-spacing:2px}
 .pace-display .pace-label{font-size:11px;color:var(--text-muted);margin-top:2px;letter-spacing:1px;text-transform:uppercase}
@@ -117,34 +115,31 @@ select option{background:#1f1f1f}
 .run-stat-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent-run);line-height:1}
 .run-stat-lbl{font-size:10px;color:var(--text-muted);margin-top:3px}
 
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center}
 .stat-num{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--accent);line-height:1}
 .stat-label{font-size:11px;color:var(--text-muted);margin-top:4px}
-
-.ai-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px}
-.ai-box-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
-.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.ai-box-body{padding:14px 16px;font-size:14px;line-height:1.75;color:var(--text-dim)}
-.ai-box-body strong{color:var(--text)}
-.ai-placeholder{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:14px;line-height:1.8}
-.ai-placeholder .big{font-size:36px;margin-bottom:12px}
-.copy-box{background:#0a0a0a;border:1px solid var(--border);border-radius:10px;padding:14px;font-size:12px;color:var(--text-dim);line-height:1.8;margin:10px 0;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto;font-family:monospace}
-
-.empty{text-align:center;padding:50px 20px;color:var(--text-muted);font-size:14px;line-height:2}
-.empty .icon{font-size:40px;margin-bottom:10px}
-
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#0d0d0d;font-weight:700;font-size:14px;padding:10px 20px;border-radius:30px;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-.export-info{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;font-size:13px;color:var(--text-dim);line-height:1.8}
-.export-info strong{color:var(--text)}
 
 .history-filter{display:flex;gap:8px;margin-bottom:16px}
 .filter-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text-muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Noto Sans TC',sans-serif}
 .filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(200,255,0,0.07)}
 .filter-btn.run-filter.active{border-color:var(--accent-run);color:var(--accent-run);background:rgba(0,207,255,0.07)}
+
+.ai-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px}
+.ai-box-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
+.ai-box-body{padding:14px 16px;font-size:14px;line-height:1.75;color:var(--text-dim)}
+.ai-box-body strong{color:var(--text)}
+.copy-box{background:#0a0a0a;border:1px solid var(--border);border-radius:10px;padding:14px;font-size:12px;color:var(--text-dim);line-height:1.8;margin:10px 0;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto;font-family:monospace}
+.ai-placeholder{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:14px;line-height:1.8}
+.ai-placeholder .big{font-size:36px;margin-bottom:12px}
+.export-info{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;font-size:13px;color:var(--text-dim);line-height:1.8}
+.export-info strong{color:var(--text)}
+
+.empty{text-align:center;padding:50px 20px;color:var(--text-muted);font-size:14px;line-height:2}
+.empty .icon{font-size:40px;margin-bottom:10px}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#0d0d0d;font-weight:700;font-size:14px;padding:10px 20px;border-radius:30px;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
@@ -160,12 +155,13 @@ select option{background:#1f1f1f}
   </div>
 </div>
 
+<!-- 同步狀態列 -->
 <div class="sync-bar">
   <div class="sync-status">
     <div class="sync-dot" id="syncDot"></div>
-    <span id="syncText">正在連線...</span>
+    <span id="syncText">連線中...</span>
   </div>
-  <button class="sync-btn" onclick="syncFromSheets()">↻ 從雲端同步</button>
+  <button class="sync-btn" onclick="syncFromSheets()">⟳ 從雲端讀取</button>
 </div>
 
 <div class="tabs">
@@ -199,12 +195,12 @@ select option{background:#1f1f1f}
         <option value="硬舉"><option value="腿彎舉"><option value="肩推">
         <option value="側平舉"><option value="二頭彎舉"><option value="三頭下壓">
         <option value="捲腹"><option value="棒式">
+        <option value="機械股四頭"><option value="機械臀推"><option value="羅馬尼亞硬舉">
+        <option value="分腿蹲">
       </datalist>
     </div>
-
     <div class="section-label">組數紀錄</div>
     <div class="sets-list" id="setsList"></div>
-
     <div class="form-row">
       <div class="form-group">
         <label id="weightLabel">重量 (kg)</label>
@@ -223,24 +219,20 @@ select option{background:#1f1f1f}
         </div>
       </div>
     </div>
-
     <button class="add-set-btn" onclick="addSet()">＋ 加入這組</button>
-
     <div class="form-group" style="margin-top:8px">
       <label>備註（選填）</label>
       <textarea id="noteInput" placeholder="感覺、痠痛程度、技巧提醒..."></textarea>
     </div>
-
     <button class="btn-primary" onclick="saveWorkout()">儲存今日訓練</button>
   </div>
 
   <!-- 跑步表單 -->
   <div class="run-form" id="runForm">
     <div class="run-banner">
-      <div class="run-icon">🏃</div>
+      <div style="font-size:24px">🏃</div>
       <div>跑步模式 — 填寫本次跑步數據</div>
     </div>
-
     <div class="run-metric-grid">
       <div class="run-metric">
         <label>距離</label>
@@ -249,7 +241,7 @@ select option{background:#1f1f1f}
       </div>
       <div class="run-metric">
         <label>時長</label>
-        <input type="text" id="runDuration" placeholder="00:00" maxlength="8">
+        <input type="text" id="runDuration" placeholder="30:00" maxlength="8">
         <div class="unit-hint">分:秒 或 時:分:秒</div>
       </div>
       <div class="run-metric">
@@ -263,34 +255,35 @@ select option{background:#1f1f1f}
         <div class="unit-hint">公尺 (m)</div>
       </div>
     </div>
-
     <div class="pace-display">
       <div class="pace-val" id="paceVal">--'--"</div>
       <div class="pace-label">平均配速 (min/km)</div>
     </div>
-
     <div class="form-group" style="margin-top:8px">
       <label>備註（選填）</label>
       <textarea id="runNote" placeholder="路線、天氣、感受..."></textarea>
     </div>
-
     <button class="btn-primary run-save" onclick="saveRun()">儲存跑步紀錄</button>
   </div>
 </div>
 
 <!-- HISTORY -->
 <div class="page" id="page-history">
-  <div class="stats-row" style="grid-template-columns:1fr 1fr">
-    <div class="stat-card"><div class="stat-num" id="statWeekLift">0</div><div class="stat-label">重訓本週次數</div></div>
-    <div class="stat-card" style="border-color:rgba(0,207,255,0.2)"><div class="stat-num" id="statWeekRun" style="color:var(--accent-run)">0</div><div class="stat-label">跑步本週次數</div></div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="statWeekLift">0</div>
+      <div class="stat-label">重訓本週次數</div>
+    </div>
+    <div class="stat-card" style="border-color:rgba(0,207,255,0.2)">
+      <div class="stat-num" id="statWeekRun" style="color:var(--accent-run)">0</div>
+      <div class="stat-label">跑步本週次數</div>
+    </div>
   </div>
-
   <div class="history-filter">
     <button class="filter-btn active" id="filterAll" onclick="setFilter('all',this)">全部</button>
     <button class="filter-btn" id="filterLift" onclick="setFilter('lift',this)">重訓</button>
     <button class="filter-btn run-filter" id="filterRun" onclick="setFilter('run',this)">🏃 跑步</button>
   </div>
-
   <div class="section-label">訓練記錄</div>
   <div id="historyList"></div>
 </div>
@@ -299,21 +292,19 @@ select option{background:#1f1f1f}
 <div class="page" id="page-ai">
   <div class="section-label">匯出試算表</div>
   <div class="export-info">
-    點「<strong>下載 CSV</strong>」可以取得試算表檔案，用 <strong>Excel</strong> 或 <strong>Google Sheets</strong> 開啟，所有訓練資料都在裡面。
+    點「<strong>下載 CSV</strong>」可以取得試算表檔案，用 <strong>Excel</strong> 或 <strong>Google Sheets</strong> 開啟。
   </div>
   <button class="btn-green" onclick="exportCSV()">📊 下載 CSV 試算表</button>
-
   <div class="section-label" style="margin-top:24px">AI 個人教練分析</div>
   <div class="ai-box">
     <div class="ai-box-header"><div class="ai-dot"></div>使用說明</div>
     <div class="ai-box-body">
       1. 點「<strong>複製訓練資料</strong>」<br>
-      2. 開啟 <strong>Claude.ai</strong>（就是現在這個網頁）<br>
+      2. 開啟 <strong>Claude.ai</strong><br>
       3. 貼上，問「請分析我的訓練並給建議」<br><br>
       資料越多，建議越準確 💪
     </div>
   </div>
-
   <div id="aiDataBox" style="display:none">
     <div class="copy-box" id="copyContent"></div>
     <button class="btn-primary" onclick="copyData()">複製訓練資料</button>
@@ -328,140 +319,202 @@ select option{background:#1f1f1f}
 <div class="toast" id="toast"></div>
 
 <script>
+// ===== 設定 =====
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxhalZotsy3RqQxc3-jVtI_GcCYdvSmTTwar6TFtv5MmaQZRZ8NUZU4xMr9oi4CA37U/exec';
+const STORAGE_KEY = 'workouts_v3';
 
+// ===== 狀態 =====
 let currentMuscle = '';
 let currentSets = [];
 let currentUnit = 'kg';
 let historyFilter = 'all';
-let workouts = JSON.parse(localStorage.getItem('workouts_v3') || '[]');
-
+let workouts = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 const KG_TO_LBS = 2.20462;
-function toDisplay(kg) { return currentUnit==='lbs' ? Math.round(kg*KG_TO_LBS*10)/10 : kg; }
-function toKg(val) { return currentUnit==='lbs' ? Math.round(val/KG_TO_LBS*10)/10 : val; }
 
+function toDisplay(kg) {
+  return currentUnit === 'lbs' ? Math.round(kg * KG_TO_LBS * 10) / 10 : kg;
+}
+function toKg(val) {
+  return currentUnit === 'lbs' ? Math.round(val / KG_TO_LBS * 10) / 10 : val;
+}
+function formatDate(d) {
+  return d.toLocaleDateString('zh-TW');
+}
+function localDateISO(d) {
+  // 使用本地時間，避免時區問題（台灣 UTC+8）
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
+
+// ===== 同步狀態 =====
 function setSyncStatus(state, text) {
-  document.getElementById('syncDot').className = 'sync-dot ' + state;
+  const dot = document.getElementById('syncDot');
+  dot.className = 'sync-dot ' + state;
   document.getElementById('syncText').textContent = text;
 }
 
+// ===== 啟動：從雲端讀取資料 =====
 async function syncFromSheets() {
-  setSyncStatus('loading', '同步中...');
+  setSyncStatus('loading', '從雲端讀取中...');
   try {
-    const res = await fetch(GAS_URL + '?action=read');
+    const res = await fetch(GAS_URL + '?action=read', { cache: 'no-store' });
     const json = await res.json();
     if (json.status === 'ok' && Array.isArray(json.data) && json.data.length > 0) {
+      // 把 Sheets 資料轉成 App 格式
       const sheetsWorkouts = parseSheetData(json.data);
-      mergeWorkouts(sheetsWorkouts);
-      localStorage.setItem('workouts_v3', JSON.stringify(workouts));
-      renderHistory();
-      renderAI();
+      // 合併：以雲端為主，保留本機有但雲端沒有的（離線新增的）
+      const merged = mergeWorkouts(sheetsWorkouts, workouts);
+      workouts = merged;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(workouts));
       setSyncStatus('ok', '已同步 · ' + new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}));
-      showToast('✓ 雲端同步完成');
-    } else {
+      if (document.getElementById('page-history').classList.contains('active')) renderHistory();
+      showToast('✓ 雲端資料已載入');
+    } else if (json.status === 'ok' && json.data.length === 0) {
       setSyncStatus('ok', '雲端無資料');
+    } else {
+      setSyncStatus('err', '讀取失敗');
     }
   } catch(e) {
-    setSyncStatus('err', '同步失敗（離線模式）');
+    setSyncStatus('err', '離線或連線失敗');
   }
 }
 
+// 把 Sheets 回傳的原始資料（每列是一組）轉成 App workout 物件
 function parseSheetData(rows) {
-  const groups = {};
+  // 依 日期+部位+動作+備註 分組
+  const map = {};
   rows.forEach(row => {
-    const date = String(row['日期']||'').trim();
-    const muscle = String(row['部位']||'').trim();
-    const exercise = String(row['動作']||'').trim();
-    const note = String(row['備註']||'').trim();
-    const weightKg = parseFloat(row['重量(kg)'])||0;
-    const reps = parseInt(row['次數'])||0;
-    const setNum = parseInt(row['組號'])||1;
-    if (!date||!muscle) return;
+    const date = String(row['日期'] || '').trim();
+    const muscle = String(row['部位'] || '').trim();
+    const exercise = String(row['動作'] || '').trim();
+    const note = String(row['備註'] || '').trim();
+    const key = `${date}||${muscle}||${exercise}`;
 
-    if (muscle==='跑步') {
-      let rd = {};
-      try { rd = JSON.parse(note); } catch(e) {}
-      const key = date+'_run_'+(rd.runId||date);
-      if (!groups[key]) groups[key] = {
-        id: rd.runId||(date+'_run'), type:'run',
-        date, dateISO: rd.dateISO||date, muscle:'跑步',
-        distance: rd.distance||weightKg||0, duration: rd.duration||'',
-        durationSec: rd.durationSec||0, heartRate: rd.heartRate||reps||0,
-        elevation: rd.elevation||0, pace: rd.pace||'',
-        paceSecPerKm: rd.paceSecPerKm||0, note: rd.note||''
-      };
+    if (muscle === '跑步') {
+      // 跑步記錄：每筆是一次完整紀錄
+      if (!map[key]) {
+        map[key] = {
+          id: key,
+          type: 'run',
+          date: date,
+          dateISO: parseSheetDate(date),
+          muscle: '跑步',
+          distance: parseFloat(row['重量(kg)']) || 0,
+          duration: String(row['次數'] || ''),
+          heartRate: parseInt(row['組號']) || 0,
+          elevation: parseInt(row['備註']) || 0,
+          pace: exercise,
+          note: note
+        };
+      }
     } else {
-      const key = date+'_'+muscle+'_'+exercise;
-      if (!groups[key]) groups[key] = {
-        id: date+'_'+muscle+'_'+exercise, type:'lift',
-        date, dateISO: date, muscle, exercise, sets:[], note
-      };
-      groups[key].sets[setNum-1] = {weightKg, reps};
+      // 重訓記錄
+      if (!map[key]) {
+        map[key] = {
+          id: key,
+          type: 'lift',
+          date: date,
+          dateISO: parseSheetDate(date),
+          muscle: muscle,
+          exercise: exercise,
+          sets: [],
+          note: note
+        };
+      }
+      const weightKg = parseFloat(row['重量(kg)']) || 0;
+      const reps = parseInt(row['次數']) || 0;
+      map[key].sets.push({ weightKg, reps });
     }
   });
-  return Object.values(groups).map(w => {
-    if (w.type==='lift') w.sets = w.sets.filter(Boolean);
-    return w;
-  });
+  return Object.values(map).sort((a,b) => b.dateISO.localeCompare(a.dateISO));
 }
 
-function mergeWorkouts(sheetsWorkouts) {
-  const existingIds = new Set(workouts.map(w => String(w.id)));
-  sheetsWorkouts.forEach(sw => {
-    if (!existingIds.has(String(sw.id))) workouts.push(sw);
-  });
-  workouts.sort((a,b) => (b.dateISO||b.date).localeCompare(a.dateISO||a.date));
+function parseSheetDate(dateStr) {
+  // 把 zh-TW 日期（如 2026/3/31）轉成 ISO 格式
+  try {
+    const d = new Date(dateStr.replace(/\//g, '-'));
+    if (!isNaN(d)) return d.toISOString().split('T')[0];
+  } catch(e) {}
+  return dateStr;
 }
 
-async function pushLiftToSheets(workout) {
+function mergeWorkouts(cloud, local) {
+  // 以 id 為 key 合併，雲端優先，但保留雲端沒有的本機資料（離線新增）
+  const map = {};
+  cloud.forEach(w => { map[String(w.id)] = w; });
+  local.forEach(w => {
+    const k = String(w.id);
+    if (!map[k]) map[k] = w; // 本機有、雲端沒有 → 保留（離線新增）
+  });
+  return Object.values(map).sort((a,b) => (b.dateISO||'').localeCompare(a.dateISO||''));
+}
+
+// ===== 推送到 Sheets =====
+async function pushToSheets(workout) {
   try {
     const res = await fetch(GAS_URL, {
-      method:'POST',
-      body: JSON.stringify({ action:'save', data:{ date:workout.date, muscle:workout.muscle, exercise:workout.exercise, sets:workout.sets, note:workout.note||'' }})
+      method: 'POST',
+      body: JSON.stringify({ action: 'save', data: workout })
     });
     const json = await res.json();
-    setSyncStatus(json.status==='ok'?'ok':'err', json.status==='ok'?'已同步 · '+new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}):'儲存失敗');
-  } catch(e) { setSyncStatus('err','離線，資料已存本機'); }
+    if (json.status === 'ok') {
+      setSyncStatus('ok', '已同步 · ' + new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}));
+    } else {
+      setSyncStatus('err', '同步失敗，資料已存本機');
+    }
+  } catch(e) {
+    setSyncStatus('err', '離線，資料已存本機');
+  }
 }
 
-async function pushRunToSheets(workout) {
+async function deleteFromSheets(workout) {
   try {
-    const noteJson = JSON.stringify({
-      runId:workout.id, dateISO:workout.dateISO, distance:workout.distance,
-      duration:workout.duration, durationSec:workout.durationSec, heartRate:workout.heartRate,
-      elevation:workout.elevation, pace:workout.pace, paceSecPerKm:workout.paceSecPerKm, note:workout.note
-    });
+    const key = `${workout.date}||${workout.muscle}||${workout.exercise || workout.id}`;
     const res = await fetch(GAS_URL, {
-      method:'POST',
-      body: JSON.stringify({ action:'save', data:{ date:workout.date, muscle:'跑步', exercise:'跑步', sets:[{weightKg:workout.distance, reps:workout.heartRate||0}], note:noteJson }})
+      method: 'POST',
+      body: JSON.stringify({ action: 'delete', key })
     });
     const json = await res.json();
-    setSyncStatus(json.status==='ok'?'ok':'err', json.status==='ok'?'已同步 · '+new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}):'儲存失敗');
-  } catch(e) { setSyncStatus('err','離線，資料已存本機'); }
+    if (json.status === 'ok') {
+      setSyncStatus('ok', '已同步 · ' + new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}));
+    } else {
+      setSyncStatus('err', '本機已刪，雲端刪除失敗');
+    }
+  } catch(e) {
+    setSyncStatus('err', '離線，雲端未刪除');
+  }
 }
 
+// ===== 初始化 =====
 (function init() {
+  const now = new Date();
   document.getElementById('todayLabel').textContent =
-    new Date().toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});
+    now.toLocaleDateString('zh-TW', { month:'long', day:'numeric', weekday:'short' });
   renderSets();
   document.getElementById('runDistance').addEventListener('input', calcPace);
   document.getElementById('runDuration').addEventListener('input', calcPace);
+  // 啟動時自動從雲端讀取
   syncFromSheets();
 })();
 
+// ===== 單位 =====
 function setUnit(u) {
-  const prev = currentUnit; currentUnit = u;
-  document.getElementById('btnKg').classList.toggle('active',u==='kg');
-  document.getElementById('btnLbs').classList.toggle('active',u==='lbs');
+  const prev = currentUnit;
+  currentUnit = u;
+  document.getElementById('btnKg').classList.toggle('active', u==='kg');
+  document.getElementById('btnLbs').classList.toggle('active', u==='lbs');
   document.getElementById('weightLabel').textContent = `重量 (${u})`;
   const wEl = document.getElementById('inputWeight');
-  const v = parseFloat(wEl.value)||0;
-  if (prev==='kg'&&u==='lbs') wEl.value = Math.round(v*KG_TO_LBS*10)/10;
-  else if (prev==='lbs'&&u==='kg') wEl.value = Math.round(v/KG_TO_LBS*10)/10;
+  const val = parseFloat(wEl.value) || 0;
+  if (prev==='kg' && u==='lbs') wEl.value = Math.round(val * KG_TO_LBS * 10) / 10;
+  else if (prev==='lbs' && u==='kg') wEl.value = Math.round(val / KG_TO_LBS * 10) / 10;
   renderSets();
   if (document.getElementById('page-history').classList.contains('active')) renderHistory();
 }
 
+// ===== 頁籤 =====
 function switchTab(tab, btn) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -471,45 +524,48 @@ function switchTab(tab, btn) {
   if (tab==='ai') renderAI();
 }
 
+// ===== 部位選擇 =====
 function selectMuscle(el, muscle) {
   document.querySelectorAll('.muscle-btn').forEach(b=>b.classList.remove('selected'));
   el.classList.add('selected');
   currentMuscle = muscle;
-  const isRun = muscle==='跑步';
-  document.getElementById('liftForm').classList.toggle('hidden',isRun);
-  document.getElementById('runForm').classList.toggle('active',isRun);
+  const isRun = muscle === '跑步';
+  document.getElementById('liftForm').classList.toggle('hidden', isRun);
+  document.getElementById('runForm').classList.toggle('active', isRun);
 }
 
+// ===== 步進器 =====
 function adjust(field, delta) {
-  const el = document.getElementById(field==='weight'?'inputWeight':'inputReps');
-  let val = parseFloat(el.value)+delta;
-  if (val<0) val=0;
+  const el = document.getElementById(field==='weight' ? 'inputWeight' : 'inputReps');
+  let val = parseFloat(el.value) + delta;
+  if (val < 0) val = 0;
   el.value = field==='weight' ? Math.round(val*10)/10 : Math.round(val);
 }
 
+// ===== 組數 =====
 function addSet() {
-  const w = parseFloat(document.getElementById('inputWeight').value)||0;
-  const r = parseInt(document.getElementById('inputReps').value)||0;
-  if (r<1) { showToast('請輸入次數'); return; }
-  currentSets.push({weightKg:toKg(w), reps:r});
+  const weightDisplay = parseFloat(document.getElementById('inputWeight').value) || 0;
+  const reps = parseInt(document.getElementById('inputReps').value) || 0;
+  if (reps < 1) { showToast('請輸入次數'); return; }
+  currentSets.push({ weightKg: toKg(weightDisplay), reps });
   renderSets();
 }
-
 function renderSets() {
   const list = document.getElementById('setsList');
   if (!currentSets.length) { list.innerHTML=''; return; }
-  list.innerHTML = currentSets.map((s,i) => {
-    const w = toDisplay(s.weightKg);
-    return `<div class="set-item">
+  list.innerHTML = currentSets.map((s,i)=>`
+    <div class="set-item">
       <div class="set-num">${i+1}</div>
-      <div class="set-info"><strong>${s.weightKg>0?w+' '+currentUnit:'自身體重'}</strong><span> × ${s.reps} 下</span></div>
+      <div class="set-info">
+        <strong>${s.weightKg>0 ? toDisplay(s.weightKg)+' '+currentUnit : '自身體重'}</strong>
+        <span> × ${s.reps} 下</span>
+      </div>
       <button class="set-delete" onclick="deleteSet(${i})">✕</button>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 }
-
 function deleteSet(i) { currentSets.splice(i,1); renderSets(); }
 
+// ===== 配速計算 =====
 function parseDuration(str) {
   const parts = str.trim().split(':').map(Number);
   if (parts.some(isNaN)) return null;
@@ -517,31 +573,44 @@ function parseDuration(str) {
   if (parts.length===3) return parts[0]*3600+parts[1]*60+parts[2];
   return null;
 }
-function formatPace(s) {
-  const m = Math.floor(s/60), sec = Math.round(s%60);
-  return `${m}'${String(sec).padStart(2,'0')}"`;
+function formatPace(secPerKm) {
+  const min = Math.floor(secPerKm/60);
+  const sec = Math.round(secPerKm%60);
+  return `${min}'${String(sec).padStart(2,'0')}"`;
 }
 function calcPace() {
   const dist = parseFloat(document.getElementById('runDistance').value);
-  const sec = parseDuration(document.getElementById('runDuration').value);
-  document.getElementById('paceVal').textContent = (dist>0&&sec&&sec>0) ? formatPace(sec/dist) : '--\'--"';
+  const totalSec = parseDuration(document.getElementById('runDuration').value);
+  if (dist>0 && totalSec && totalSec>0) {
+    document.getElementById('paceVal').textContent = formatPace(totalSec/dist);
+  } else {
+    document.getElementById('paceVal').textContent = '--\'--"';
+  }
 }
 
-function formatDate(d) {
-  return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
-}
-
+// ===== 儲存重訓 =====
 async function saveWorkout() {
   const name = document.getElementById('exerciseName').value.trim();
   if (!name) { showToast('請輸入動作名稱'); return; }
-  if (!currentMuscle||currentMuscle==='跑步') { showToast('請選擇訓練部位'); return; }
+  if (!currentMuscle || currentMuscle==='跑步') { showToast('請選擇訓練部位'); return; }
   if (!currentSets.length) { showToast('請至少加入一組'); return; }
   const note = document.getElementById('noteInput').value.trim();
   const now = new Date();
-  const workout = { id:Date.now(), type:'lift', date:formatDate(now), dateISO:now.toISOString().split('T')[0], muscle:currentMuscle, exercise:name, sets:currentSets.map(s=>({...s})), note };
+  const workout = {
+    id: Date.now(),
+    type: 'lift',
+    date: formatDate(now),
+    dateISO: localDateISO(now),
+    muscle: currentMuscle,
+    exercise: name,
+    sets: currentSets.map(s=>({...s})),
+    note
+  };
   workouts.unshift(workout);
-  localStorage.setItem('workouts_v3', JSON.stringify(workouts));
-  currentSets=[]; currentMuscle='';
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(workouts));
+  // 重置
+  currentSets=[];
+  currentMuscle='';
   document.getElementById('exerciseName').value='';
   document.getElementById('noteInput').value='';
   document.querySelectorAll('.muscle-btn').forEach(b=>b.classList.remove('selected'));
@@ -550,9 +619,10 @@ async function saveWorkout() {
   renderSets();
   showToast('✓ 已儲存！同步中...');
   setSyncStatus('loading','同步中...');
-  await pushLiftToSheets(workout);
+  await pushToSheets(workout);
 }
 
+// ===== 儲存跑步 =====
 async function saveRun() {
   const dist = parseFloat(document.getElementById('runDistance').value);
   const durStr = document.getElementById('runDuration').value.trim();
@@ -564,9 +634,24 @@ async function saveRun() {
   const totalSec = parseDuration(durStr);
   if (!totalSec) { showToast('時長格式錯誤，請用 分:秒 或 時:分:秒'); return; }
   const now = new Date();
-  const workout = { id:Date.now(), type:'run', date:formatDate(now), dateISO:now.toISOString().split('T')[0], muscle:'跑步', distance:dist, duration:durStr, durationSec:totalSec, heartRate:hr, elevation:elev, pace:formatPace(totalSec/dist), paceSecPerKm:totalSec/dist, note };
+  const workout = {
+    id: Date.now(),
+    type: 'run',
+    date: formatDate(now),
+    dateISO: localDateISO(now),
+    muscle: '跑步',
+    distance: dist,
+    duration: durStr,
+    durationSec: totalSec,
+    heartRate: hr,
+    elevation: elev,
+    pace: formatPace(totalSec/dist),
+    paceSecPerKm: totalSec/dist,
+    note
+  };
   workouts.unshift(workout);
-  localStorage.setItem('workouts_v3', JSON.stringify(workouts));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(workouts));
+  // 重置
   document.getElementById('runDistance').value='';
   document.getElementById('runDuration').value='';
   document.getElementById('runHR').value='';
@@ -579,59 +664,64 @@ async function saveRun() {
   document.getElementById('runForm').classList.remove('active');
   showToast('🏃 已儲存！同步中...');
   setSyncStatus('loading','同步中...');
-  await pushRunToSheets(workout);
+  await pushToSheets(workout);
 }
 
+// ===== 歷史篩選 =====
 function setFilter(f, btn) {
-  historyFilter=f;
+  historyFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderHistory();
 }
 
+// ===== 歷史頁面 =====
 function renderHistory() {
   const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
-  // 重訓本週：同一天算1次（用 dateISO 去重）
   const liftDaysThisWeek = new Set(
     workouts.filter(w=>w.type==='lift' && new Date(w.dateISO||w.date)>=weekAgo).map(w=>w.dateISO||w.date)
   ).size;
-  // 跑步本週：每筆算1次
   const runCountThisWeek = workouts.filter(w=>w.type==='run' && new Date(w.dateISO||w.date)>=weekAgo).length;
-  document.getElementById('statWeekLift').textContent=liftDaysThisWeek;
-  document.getElementById('statWeekRun').textContent=runCountThisWeek;
+  document.getElementById('statWeekLift').textContent = liftDaysThisWeek;
+  document.getElementById('statWeekRun').textContent = runCountThisWeek;
 
   let filtered = workouts;
-  if (historyFilter==='lift') filtered=workouts.filter(w=>w.type==='lift');
-  if (historyFilter==='run') filtered=workouts.filter(w=>w.type==='run');
+  if (historyFilter==='lift') filtered = workouts.filter(w=>w.type==='lift');
+  if (historyFilter==='run') filtered = workouts.filter(w=>w.type==='run');
 
   const list = document.getElementById('historyList');
-  if (!filtered.length) { list.innerHTML='<div class="empty"><div class="icon">📋</div>沒有符合的記錄</div>'; return; }
+  if (!filtered.length) {
+    list.innerHTML='<div class="empty"><div class="icon">📋</div>沒有符合的記錄</div>';
+    return;
+  }
 
   const grouped={};
   filtered.forEach(w=>{ if(!grouped[w.date]) grouped[w.date]=[]; grouped[w.date].push(w); });
 
   list.innerHTML = Object.entries(grouped).map(([date,ws])=>
     ws.map(w=>{
-      if (w.type==='run') return `<div class="workout-card run-card" data-id="${w.id}" data-date="${date}" data-muscle="跑步" data-exercise="${w.id}">
-        <div class="workout-card-header">
-          <div class="workout-card-title"><span class="tag-run">🏃 跑步</span></div>
-          <div class="workout-card-date">${date}</div>
-        </div>
-        <div class="workout-card-body">
-          <div class="run-stats-grid">
-            <div class="run-stat-item"><div class="run-stat-val">${w.distance}</div><div class="run-stat-lbl">距離 km</div></div>
-            <div class="run-stat-item"><div class="run-stat-val">${w.pace||'--'}</div><div class="run-stat-lbl">配速 /km</div></div>
-            <div class="run-stat-item"><div class="run-stat-val">${w.heartRate||'--'}</div><div class="run-stat-lbl">心率 bpm</div></div>
-            <div class="run-stat-item"><div class="run-stat-val">${w.duration||'--'}</div><div class="run-stat-lbl">時長</div></div>
-            <div class="run-stat-item"><div class="run-stat-val">${w.elevation||'--'}</div><div class="run-stat-lbl">爬升 m</div></div>
+      if (w.type==='run') return `
+        <div class="workout-card run-card">
+          <div class="workout-card-header">
+            <div class="workout-card-title"><span class="tag-run">🏃 跑步</span></div>
+            <div class="workout-card-date">${date}</div>
           </div>
-          ${w.note?`<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 ${w.note}</div>`:''}
-          <button class="btn-danger" onclick="deleteWorkout(this)">刪除此次記錄</button>
-        </div>
-      </div>`;
+          <div class="workout-card-body">
+            <div class="run-stats-grid">
+              <div class="run-stat-item"><div class="run-stat-val">${w.distance}</div><div class="run-stat-lbl">距離 km</div></div>
+              <div class="run-stat-item"><div class="run-stat-val">${w.pace||'--'}</div><div class="run-stat-lbl">配速 /km</div></div>
+              <div class="run-stat-item"><div class="run-stat-val">${w.heartRate||'--'}</div><div class="run-stat-lbl">心率 bpm</div></div>
+              <div class="run-stat-item"><div class="run-stat-val">${w.duration||'--'}</div><div class="run-stat-lbl">時長</div></div>
+              <div class="run-stat-item"><div class="run-stat-val">${w.elevation||'--'}</div><div class="run-stat-lbl">爬升 m</div></div>
+            </div>
+            ${w.note?`<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 ${w.note}</div>`:''}
+            <button class="btn-danger" onclick="deleteWorkout('${w.id}')">刪除此次記錄</button>
+          </div>
+        </div>`;
       else {
-        const setStrs=(w.sets||[]).map(s=>`${s.weightKg>0?toDisplay(s.weightKg)+currentUnit:'自重'}×${s.reps}`).join(', ');
-        return `<div class="workout-card" data-id="${w.id}" data-date="${date}" data-muscle="${w.muscle}" data-exercise="${w.exercise}">
+        const setStrs = (w.sets||[]).map(s=>`${s.weightKg>0?toDisplay(s.weightKg)+currentUnit:'自重'}×${s.reps}`).join(', ');
+        return `
+        <div class="workout-card">
           <div class="workout-card-header">
             <div class="workout-card-title"><span class="tag-muscle">${w.muscle}</span></div>
             <div class="workout-card-date">${date}</div>
@@ -642,7 +732,7 @@ function renderHistory() {
               <span class="exercise-stats">${(w.sets||[]).length}組 · ${setStrs}</span>
             </div>
             ${w.note?`<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 ${w.note}</div>`:''}
-            <button class="btn-danger" onclick="deleteWorkout(this)">刪除此次記錄</button>
+            <button class="btn-danger" onclick="deleteWorkout('${w.id}')">刪除此次記錄</button>
           </div>
         </div>`;
       }
@@ -650,56 +740,20 @@ function renderHistory() {
   ).join('');
 }
 
-function deleteWorkout(btn) {
-  const card = btn.closest('.workout-card');
-  const id = card.dataset.id;
-  const date = card.dataset.date;
-  const muscle = card.dataset.muscle;
-  const exercise = card.dataset.exercise;
-  showConfirm(`確定刪除 ${date} 的記錄？`, async () => {
-    // 刪本機
-    workouts = workouts.filter(w => String(w.id) !== String(id));
-    localStorage.setItem('workouts_v3', JSON.stringify(workouts));
-    renderHistory();
-    showToast('刪除中...');
-    // 刪 Sheets
-    try {
-      const key = `${date}|${muscle}|${exercise}`;
-      const res = await fetch(GAS_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'delete', key })
-      });
-      const json = await res.json();
-      if (json.status === 'ok') {
-        showToast('✓ 已從雲端刪除');
-        setSyncStatus('ok', '已同步 · ' + new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}));
-      } else {
-        showToast('本機已刪，雲端刪除失敗');
-        setSyncStatus('err', '雲端刪除失敗');
-      }
-    } catch(e) {
-      showToast('本機已刪，離線無法同步');
-      setSyncStatus('err', '離線，雲端未刪除');
-    }
-  });
+// ===== 刪除 =====
+function deleteWorkout(id) {
+  const w = workouts.find(x=>String(x.id)===String(id));
+  if (!w) return;
+  if (!confirm(`確定刪除 ${w.date} 的記錄？`)) return;
+  workouts = workouts.filter(x=>String(x.id)!==String(id));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(workouts));
+  renderHistory();
+  showToast('刪除中...');
+  setSyncStatus('loading','同步中...');
+  deleteFromSheets(w);
 }
 
-function showConfirm(msg, onConfirm) {
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px';
-  overlay.innerHTML = `
-    <div style="background:#1f1f1f;border:1px solid #333;border-radius:16px;padding:24px;width:100%;max-width:320px">
-      <div style="font-size:15px;color:#f0f0f0;line-height:1.6;margin-bottom:20px">${msg}</div>
-      <div style="display:flex;gap:10px">
-        <button id="confirmCancel" style="flex:1;padding:12px;background:none;border:1.5px solid #333;border-radius:10px;color:#999;font-size:14px;cursor:pointer;font-family:'Noto Sans TC',sans-serif">取消</button>
-        <button id="confirmOk" style="flex:1;padding:12px;background:none;border:1.5px solid #ff4d00;border-radius:10px;color:#ff4d00;font-size:14px;cursor:pointer;font-family:'Noto Sans TC',sans-serif">確定刪除</button>
-      </div>
-    </div>`;
-  document.body.appendChild(overlay);
-  document.getElementById('confirmCancel').onclick = () => document.body.removeChild(overlay);
-  document.getElementById('confirmOk').onclick = () => { document.body.removeChild(overlay); onConfirm(); };
-}
-
+// ===== CSV 匯出 =====
 function exportCSV() {
   if (!workouts.length) { showToast('還沒有訓練資料'); return; }
   const rows=[['日期','類型','部位','動作','重量(kg)','次數','組號','距離km','時長','心率bpm','爬升m','配速','備註']];
@@ -715,6 +769,7 @@ function exportCSV() {
   showToast('✓ CSV 已下載！');
 }
 
+// ===== AI 分析文字 =====
 function renderAI() {
   if (!workouts.length) {
     document.getElementById('aiDataBox').style.display='none';
@@ -729,8 +784,9 @@ function renderAI() {
   Object.entries(grouped).slice(0,14).forEach(([date,ws])=>{
     lines.push(`【${date}】`);
     ws.forEach(w=>{
-      if (w.type==='run') lines.push(`・跑步｜距離 ${w.distance}km｜時長 ${w.duration}｜配速 ${w.pace}/km${w.heartRate?'｜心率 '+w.heartRate+'bpm':''}${w.elevation?'｜爬升 '+w.elevation+'m':''}`);
-      else {
+      if (w.type==='run') {
+        lines.push(`・跑步｜距離 ${w.distance}km｜時長 ${w.duration}｜配速 ${w.pace}/km${w.heartRate?'｜心率 '+w.heartRate+'bpm':''}${w.elevation?'｜爬升 '+w.elevation+'m':''}`);
+      } else {
         lines.push(`・${w.muscle}｜${w.exercise}`);
         (w.sets||[]).forEach((s,i)=>lines.push(`  第${i+1}組：${s.weightKg>0?toDisplay(s.weightKg)+currentUnit:'自重'} × ${s.reps}下`));
       }
@@ -744,12 +800,12 @@ function renderAI() {
   lines.push('3. 給我下週的訓練建議');
   document.getElementById('copyContent').textContent=lines.join('\n');
 }
-
 function copyData() {
   navigator.clipboard.writeText(document.getElementById('copyContent').textContent)
     .then(()=>showToast('✓ 已複製！貼到 Claude 吧'));
 }
 
+// ===== Toast =====
 function showToast(msg) {
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
