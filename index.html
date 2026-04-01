@@ -649,7 +649,7 @@ function renderHistory() {
 
 function deleteWorkout(id, date) {
   if (!confirm(`確定刪除 ${date} 的記錄？`)) return;
-  workouts=workouts.filter(w=>w.id!==Number(id));
+  workouts=workouts.filter(w=>String(w.id)!==String(id));
   localStorage.setItem('workouts_v3', JSON.stringify(workouts));
   renderHistory();
   showToast('已刪除（本機）');
