@@ -479,19 +479,30 @@ async function pushToSheets(workout) {
 
 async function deleteFromSheets(workout) {
   try {
-    const key = `${workout.date}||${workout.muscle}||${workout.exercise || workout.id}`;
+    // key 格式必須與 GAS deleteWorkout 的比對邏輯一致：日期、部位、動作
+    const date = workout.date;
+    const muscle = workout.muscle;
+    // 重訓用 exercise，跑步用配速（存在 exercise 欄位）
+    const exercise = workout.type === 'run' ? (workout.pace || '') : (workout.exercise || '');
+    const key = date + '||' + muscle + '||' + exercise;
+    console.log('刪除 key:', key);
     const res = await fetch(GAS_URL, {
       method: 'POST',
       body: JSON.stringify({ action: 'delete', key })
     });
     const json = await res.json();
+    console.log('刪除回應:', json);
     if (json.status === 'ok') {
       setSyncStatus('ok', '已同步 · ' + new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}));
+      showToast('✓ 雲端已刪除');
     } else {
       setSyncStatus('err', '本機已刪，雲端刪除失敗');
+      showToast('本機已刪，雲端失敗');
     }
   } catch(e) {
+    console.log('刪除錯誤:', e);
     setSyncStatus('err', '離線，雲端未刪除');
+    showToast('離線，雲端未刪除');
   }
 }
 
@@ -749,7 +760,7 @@ function renderHistory() {
 }
 
 // ===== 刪除 =====
-function deleteWorkout(id) {
+async function deleteWorkout(id) {
   const w = workouts.find(x=>String(x.id)===String(id));
   if (!w) return;
   if (!confirm(`確定刪除 ${w.date} 的記錄？`)) return;
@@ -758,7 +769,7 @@ function deleteWorkout(id) {
   renderHistory();
   showToast('刪除中...');
   setSyncStatus('loading','同步中...');
-  deleteFromSheets(w);
+  await deleteFromSheets(w);
 }
 
 // ===== CSV 匯出 =====
