@@ -493,7 +493,7 @@ function parseSheetData(rows) {
           dateISO: parseSheetDate(date),
           muscle: '跑步',
           distance: parseFloat(row['重量(kg)']) || 0,
-          duration: String(row['次數'] || ''),
+          duration: cleanDuration(row['次數'] || ''),
           heartRate: parseInt(row['組號']) || 0,
           elevation: parseInt(row['備註']) || 0,
           pace: exercise,
@@ -535,6 +535,24 @@ function parseSheetDate(dateStr) {
   if (!isNaN(d)) {
     const tw = new Date(d.getTime() + 8*60*60*1000);
     return tw.getUTCFullYear()+'-'+String(tw.getUTCMonth()+1).padStart(2,'0')+'-'+String(tw.getUTCDate()).padStart(2,'0');
+  }
+  return s;
+}
+
+function cleanDuration(val) {
+  // Sheets 有時把 34:45 當成時間物件，轉出來變 1899-12-31T02:45:00.000Z
+  // 需要把它轉回 mm:ss 格式
+  const s = String(val).trim();
+  // 正常格式：34:45 或 1:34:45 → 直接用
+  if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(s)) return s;
+  // ISO 日期格式：1899-12-31T02:45:00.000Z → 取時分秒
+  const iso = s.match(/T(\d{2}):(\d{2}):(\d{2})/);
+  if (iso) {
+    const h = parseInt(iso[1]);
+    const m = parseInt(iso[2]);
+    const sec = parseInt(iso[3]);
+    if (h > 0) return h + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+    return m + ':' + String(sec).padStart(2,'0');
   }
   return s;
 }
