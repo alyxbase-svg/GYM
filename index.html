@@ -154,6 +154,11 @@ textarea{resize:none;height:70px;font-size:14px}
     <div class="muscle-btn" onclick="selectMuscle(this,'核心')"><div class="icon">⚡</div><div class="label">核心</div></div>
     <div class="muscle-btn run-btn" onclick="selectMuscle(this,'跑步')"><div class="icon">🏃</div><div class="label">跑步</div></div>
   </div>
+  <div class="section-label">訓練日期</div>
+  <div class="form-group" style="margin-bottom:16px">
+    <input type="date" id="recordDate" style="background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;padding:12px 14px;width:100%;outline:none">
+  </div>
+
   <div class="lift-form" id="liftForm">
     <div class="section-label">動作名稱</div>
     <div class="form-group" style="margin-bottom:16px">
@@ -312,6 +317,8 @@ async function deleteFromCloud(w){
   renderSets();
   document.getElementById('runDistance').addEventListener('input',calcPace);
   document.getElementById('runDuration').addEventListener('input',calcPace);
+  // 設定預設日期為今天
+  document.getElementById('recordDate').value=localDateISO(new Date());
   // 清除舊 localStorage（不再需要）
   try{ localStorage.removeItem('workouts_v3'); }catch(e){}
   showLoading('從雲端載入資料...');
@@ -385,8 +392,10 @@ async function saveWorkout(){
   if(!currentMuscle||currentMuscle==='跑步'){showToast('請選擇訓練部位');return;}
   if(!currentSets.length){showToast('請至少加入一組');return;}
   const note=document.getElementById('noteInput').value.trim();
-  const now=new Date();
-  const w={type:'lift',date:formatDate(now),dateISO:localDateISO(now),muscle:currentMuscle,exercise:name,sets:currentSets.map(s=>({...s})),note};
+  const dateISO=document.getElementById('recordDate').value;
+  if(!dateISO){showToast('請選擇日期');return;}
+  const dp=dateISO.split('-');const dateStr=dp[0]+'/'+parseInt(dp[1])+'/'+parseInt(dp[2]);
+  const w={type:'lift',date:dateStr,dateISO:dateISO,muscle:currentMuscle,exercise:name,sets:currentSets.map(s=>({...s})),note};
   showLoading('儲存中...');
   try{
     await pushToCloud(w); await loadFromCloud();
@@ -397,6 +406,7 @@ async function saveWorkout(){
     document.getElementById('liftForm').classList.remove('hidden');
     document.getElementById('runForm').classList.remove('active');
     renderSets(); hideLoading(); showToast('✓ 已儲存到雲端！');
+    document.getElementById('recordDate').value=localDateISO(new Date());
   }catch(e){hideLoading();showToast('儲存失敗，請檢查網路');setSyncStatus('err','儲存失敗');}
 }
 
@@ -410,8 +420,10 @@ async function saveRun(){
   if(!durStr){showToast('請輸入時長');return;}
   const totalSec=parseDuration(durStr);
   if(!totalSec){showToast('時長格式錯誤，請用 分:秒 或 時:分:秒');return;}
-  const now=new Date();
-  const w={type:'run',date:formatDate(now),dateISO:localDateISO(now),muscle:'跑步',distance:dist,duration:durStr,durationSec:totalSec,heartRate:hr,elevation:elev,pace:formatPace(totalSec/dist),paceSecPerKm:totalSec/dist,note};
+  const dateISO=document.getElementById('recordDate').value;
+  if(!dateISO){showToast('請選擇日期');return;}
+  const dp=dateISO.split('-');const dateStr=dp[0]+'/'+parseInt(dp[1])+'/'+parseInt(dp[2]);
+  const w={type:'run',date:dateStr,dateISO:dateISO,muscle:'跑步',distance:dist,duration:durStr,durationSec:totalSec,heartRate:hr,elevation:elev,pace:formatPace(totalSec/dist),paceSecPerKm:totalSec/dist,note};
   showLoading('儲存中...');
   try{
     await pushToCloud(w); await loadFromCloud();
@@ -421,6 +433,7 @@ async function saveRun(){
     currentMuscle='';document.querySelectorAll('.muscle-btn').forEach(b=>b.classList.remove('selected'));
     document.getElementById('liftForm').classList.remove('hidden');document.getElementById('runForm').classList.remove('active');
     hideLoading();showToast('🏃 已儲存到雲端！');
+    document.getElementById('recordDate').value=localDateISO(new Date());
   }catch(e){hideLoading();showToast('儲存失敗，請檢查網路');setSyncStatus('err','儲存失敗');}
 }
 
@@ -440,12 +453,19 @@ function renderHistory(){
   const list=document.getElementById('historyList');
   if(!f.length){list.innerHTML='<div class="empty"><div class="icon">📋</div>沒有符合的記錄</div>';return;}
   const g={};f.forEach(w=>{if(!g[w.date])g[w.date]=[];g[w.date].push(w);});
-  list.innerHTML=Object.entries(g).map(([date,ws])=>ws.map(w=>{
-    const sid=encodeURIComponent(String(w.id));
-    if(w.type==='run') return '<div class="workout-card run-card" onclick="openEditModal(decodeURIComponent(\''+sid+'\'))"><div class="workout-card-header"><div class="workout-card-title"><span class="tag-run">🏃 跑步</span></div><div class="workout-card-date">'+date+'</div></div><div class="workout-card-body"><div class="run-stats-grid"><div class="run-stat-item"><div class="run-stat-val">'+w.distance+'</div><div class="run-stat-lbl">距離 km</div></div><div class="run-stat-item"><div class="run-stat-val">'+(w.pace||'--')+'</div><div class="run-stat-lbl">配速 /km</div></div><div class="run-stat-item"><div class="run-stat-val">'+(w.heartRate||'--')+'</div><div class="run-stat-lbl">心率 bpm</div></div><div class="run-stat-item"><div class="run-stat-val">'+(w.duration||'--')+'</div><div class="run-stat-lbl">時長</div></div><div class="run-stat-item"><div class="run-stat-val">'+(w.elevation||'--')+'</div><div class="run-stat-lbl">爬升 m</div></div></div>'+(w.note?'<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 '+w.note+'</div>':'')+'</div></div>';
+  list.innerHTML=Object.entries(g).map(([date,ws])=>ws.map((w,wi)=>{
+    const idx=workouts.indexOf(w);
+    if(w.type==='run') return '<div class="workout-card run-card" data-idx="'+idx+'"><div class="workout-card-header"><div class="workout-card-title"><span class="tag-run">🏃 跑步</span></div><div class="workout-card-date">'+date+'</div></div><div class="workout-card-body"><div class="run-stats-grid"><div class="run-stat-item"><div class="run-stat-val">'+w.distance+'</div><div class="run-stat-lbl">距離 km</div></div><div class="run-stat-item"><div class="run-stat-val">'+(w.pace||'--')+'</div><div class="run-stat-lbl">配速 /km</div></div><div class="run-stat-item"><div class="run-stat-val">'+(w.heartRate||'--')+'</div><div class="run-stat-lbl">心率 bpm</div></div><div class="run-stat-item"><div class="run-stat-val">'+(w.duration||'--')+'</div><div class="run-stat-lbl">時長</div></div><div class="run-stat-item"><div class="run-stat-val">'+(w.elevation||'--')+'</div><div class="run-stat-lbl">爬升 m</div></div></div>'+(w.note?'<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 '+w.note+'</div>':'')+'</div></div>';
     const ss=(w.sets||[]).map(s=>(s.weightKg>0?toDisplay(s.weightKg)+currentUnit:'自重')+'×'+s.reps).join(', ');
-    return '<div class="workout-card" onclick="openEditModal(decodeURIComponent(\''+sid+'\'))"><div class="workout-card-header"><div class="workout-card-title"><span class="tag-muscle">'+w.muscle+'</span></div><div class="workout-card-date">'+date+'</div></div><div class="workout-card-body"><div class="exercise-row"><span class="exercise-name">'+w.exercise+'</span><span class="exercise-stats">'+(w.sets||[]).length+'組 · '+ss+'</span></div>'+(w.note?'<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 '+w.note+'</div>':'')+'</div></div>';
+    return '<div class="workout-card" data-idx="'+idx+'"><div class="workout-card-header"><div class="workout-card-title"><span class="tag-muscle">'+w.muscle+'</span></div><div class="workout-card-date">'+date+'</div></div><div class="workout-card-body"><div class="exercise-row"><span class="exercise-name">'+w.exercise+'</span><span class="exercise-stats">'+(w.sets||[]).length+'組 · '+ss+'</span></div>'+(w.note?'<div style="font-size:12px;color:var(--text-muted);padding:4px 0 2px">💬 '+w.note+'</div>':'')+'</div></div>';
   }).join('')).join('');
+  // 用事件委派處理點擊，避免 onclick 裡的引號問題
+  list.querySelectorAll('.workout-card').forEach(card=>{
+    card.addEventListener('click',function(){
+      const i=parseInt(this.dataset.idx);
+      if(!isNaN(i)&&workouts[i]) openEditModalByIndex(i);
+    });
+  });
 }
 
 function exportCSV(){
@@ -482,9 +502,9 @@ function copyData(){navigator.clipboard.writeText(document.getElementById('copyC
 // ===== 編輯 Modal =====
 let editingId=null,editSets=[],editMuscle='';
 
-function openEditModal(id){
-  const w=workouts.find(x=>String(x.id)===String(id));if(!w)return;
-  editingId=String(id);
+function openEditModalByIndex(idx){
+  const w=workouts[idx];if(!w)return;
+  editingId=idx;
   if(w.type==='run'){
     document.getElementById('editLiftSection').style.display='none';
     document.getElementById('editRunSection').style.display='block';
@@ -520,7 +540,8 @@ function editAddSet(){const l=editSets[editSets.length-1];editSets.push({weightK
 function editDeleteSet(i){editSets.splice(i,1);renderEditSets();}
 
 async function saveEdit(){
-  const w=workouts.find(x=>String(x.id)===String(editingId));if(!w)return;
+  if(editingId===null)return;
+  const w=workouts[editingId];if(!w)return;
   const old={...w,sets:w.sets?[...w.sets]:[]};
   let nw;
   if(w.type==='run'){
@@ -550,8 +571,8 @@ async function saveEdit(){
 }
 
 async function deleteFromEdit(){
-  if(!editingId)return;
-  const w=workouts.find(x=>String(x.id)===String(editingId));if(!w)return;
+  if(editingId===null)return;
+  const w=workouts[editingId];if(!w)return;
   if(!confirm('確定刪除 '+w.date+' 的記錄？'))return;
   closeEditModal();showLoading('刪除中...');
   try{await deleteFromCloud(w);await loadFromCloud();hideLoading();renderHistory();showToast('✓ 已刪除！');}
